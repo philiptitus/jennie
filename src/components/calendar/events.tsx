@@ -1,0 +1,37 @@
+const events = [
+    { date: "13th September 2024", time: "10:00 AM", title: "Nanny interview" },
+    { date: "22nd September 2024", time: "02:00 PM", title: "Client meeting" },
+    { date: "5th October 2024", time: "09:00 AM", title: "Doctor appointment" },
+    { date: "17th October 2024", time: "11:00 AM", title: "Project deadline" },
+    { date: "1st November 2024", time: "01:00 PM", title: "Team building event" },
+    { date: "11th November 2024", time: "03:00 PM", title: "Conference call" },
+    { date: "25th November 2024", time: "04:00 PM", title: "Dentist visit" },
+    { date: "9th December 2024", time: "06:00 PM", title: "Family reunion" },
+    { date: "20th December 2024", time: "12:00 PM", title: "Wedding anniversary" },
+    { date: "3rd January 2025", time: "07:00 AM", title: "Gym session" },
+    { date: "15th January 2025", time: "08:30 AM", title: "Job interview" },
+    { date: "30th January 2025", time: "09:30 AM", title: "Project kickoff" },
+    { date: "7th February 2025", time: "10:30 AM", title: "Parent-teacher meeting" },
+    { date: "14th February 2025", time: "07:00 PM", title: "Valentine's dinner" },
+    { date: "28th February 2025", time: "01:30 PM", title: "Team lunch" },
+    { date: "10th March 2025", time: "08:00 AM", title: "Health checkup" },
+    { date: "19th March 2025", time: "02:00 PM", title: "Business presentation" },
+    { date: "2nd April 2025", time: "09:00 AM", title: "Software release" },
+    { date: "15th April 2025", time: "01:00 PM", title: "Workshop" },
+    { date: "27th April 2025", time: "05:00 PM", title: "Birthday party" },
+    { date: "9th May 2025", time: "11:00 AM", title: "Community service" },
+    { date: "22nd May 2025", time: "03:00 PM", title: "Leadership seminar" },
+    { date: "3rd June 2025", time: "12:00 PM", title: "Field trip" },
+    { date: "15th June 2025", time: "02:00 PM", title: "Charity event" },
+    { date: "26th June 2025", time: "04:00 PM", title: "Strategy meeting" },
+    { date: "8th July 2025", time: "06:00 PM", title: "Vacation planning" },
+    { date: "19th July 2025", time: "09:00 AM", title: "Product launch" },
+    { date: "30th July 2025", time: "11:00 AM", title: "Team outing" },
+    { date: "10th August 2025", time: "08:00 AM", title: "Cultural festival" },
+    { date: "25th August 2025", time: "10:00 AM", title: "Board meeting" },
+    { date: "5th September 2025", time: "07:00 PM", title: "Final review" },
+    { date: "5th September 2025", time: "08:00 PM", title: "Dinner with friends" }, // Event on the same day
+  ];
+  
+  export default events;
+  
