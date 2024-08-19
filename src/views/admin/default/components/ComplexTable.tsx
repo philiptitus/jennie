@@ -9,6 +9,10 @@ import {
 	Thead,
 	Tr,
 	useColorModeValue,
+	Input,
+	InputGroup,
+	InputLeftElement,
+	Icon
 } from '@chakra-ui/react';
 import {
 	createColumnHelper,
@@ -16,7 +20,7 @@ import {
 	getCoreRowModel,
 	getSortedRowModel,
 	SortingState,
-	useReactTable,
+	useReactTable
 } from '@tanstack/react-table';
 import * as React from 'react';
 import Card from 'components/card/Card';
@@ -24,6 +28,7 @@ import Menu from 'components/menu/MainMenu';
 import ScheduleInterviewModal from 'views/admin/default/components/InterviewModal';
 import DeleteJobModal from './DeleteJobModal';
 import CreatePreparationModal from './CreatePreparation';
+import { SearchIcon } from '@chakra-ui/icons';
 
 type RowObj = {
 	id: string;
@@ -62,6 +67,7 @@ const fakeJobsData: RowObj[] = [
 
 export default function ComplexTable() {
 	const [sorting, setSorting] = React.useState<SortingState>([]);
+	const [searchQuery, setSearchQuery] = React.useState('');
 	const textColor = useColorModeValue('secondaryGray.900', 'white');
 	const borderColor = useColorModeValue('gray.200', 'whiteAlpha.100');
 
@@ -85,23 +91,6 @@ export default function ComplexTable() {
 				</Flex>
 			),
 		}),
-		// columnHelper.accessor('description', {
-		// 	id: 'description',
-		// 	header: () => (
-		// 		<Text
-		// 			justifyContent='space-between'
-		// 			align='center'
-		// 			fontSize={{ sm: '10px', lg: '12px' }}
-		// 			color='gray.400'>
-		// 			Job Description
-		// 		</Text>
-		// 	),
-		// 	cell: (info: any) => (
-		// 		<Text color={textColor} fontSize='sm'>
-		// 			{info.getValue()}
-		// 		</Text>
-		// 	),
-		// }),
 		columnHelper.accessor('mockup_interview_date', {
 			id: 'mockup_interview_date',
 			header: () => (
@@ -172,7 +161,6 @@ export default function ComplexTable() {
 				</Flex>
 			),
 		},
-
 		{
 			id: 'create_preparation',
 			header: () => (
@@ -193,8 +181,17 @@ export default function ComplexTable() {
 	];
 
 	const [data, setData] = React.useState(() => [...fakeJobsData]);
+
+	const filteredData = React.useMemo(() => {
+		return data.filter(job =>
+			job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+			job.mockup_interview_date.toLowerCase().includes(searchQuery.toLowerCase()) ||
+			job.job_url.toLowerCase().includes(searchQuery.toLowerCase())
+		);
+	}, [data, searchQuery]);
+
 	const table = useReactTable({
-		data,
+		data: filteredData,
 		columns,
 		state: {
 			sorting,
@@ -211,6 +208,17 @@ export default function ComplexTable() {
 				<Text color={textColor} fontSize='22px' fontWeight='700' lineHeight='100%'>
 					Previous Jobs
 				</Text>
+				<InputGroup>
+					<InputLeftElement pointerEvents='none'>
+						<Icon as={SearchIcon} color='gray.300' />
+					</InputLeftElement>
+					<Input
+						type='text'
+						placeholder='Search jobs...'
+						value={searchQuery}
+						onChange={(e) => setSearchQuery(e.target.value)}
+					/>
+				</InputGroup>
 				<Menu />
 			</Flex>
 			<Box

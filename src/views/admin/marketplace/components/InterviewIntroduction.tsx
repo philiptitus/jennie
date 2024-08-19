@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Button, Flex, Image, Text, useColorModeValue } from '@chakra-ui/react';
+import NewInterview from './New';
 
 type InterviewIntroductionProps = {
   onStart: () => void;
@@ -22,24 +23,9 @@ export default function InterviewIntroduction({ onStart }: InterviewIntroduction
       textAlign="center"
       w="100%"
     >
-<Image
-  src="/favicon.ico"
-  alt="Interview Image"
-  borderRadius="full"
-  boxSize="150px"
-  mb="4"
-/>
 
-      <Text fontSize="2xl" fontWeight="bold" color={textColor} mb="2">
-        Welcome to Your Interview
-      </Text>
-      <Text fontSize="lg" color={textColorSecondary} mb="6">
-        Prepare yourself to answer a series of questions designed to challenge your skills
-        and showcase your talents. This is your opportunity to shine!
-      </Text>
-      <Button colorScheme="teal" size="lg" onClick={onStart}>
-        Start Interview
-      </Button>
+<NewInterview onStart={onStart}/>
+
     </Flex>
   );
 }

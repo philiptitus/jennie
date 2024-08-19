@@ -9,7 +9,11 @@ import {
 	Thead,
 	Tr,
 	useColorModeValue,
-	Checkbox
+	Checkbox,
+	Input,
+	InputGroup,
+	InputLeftElement,
+	Icon
 } from '@chakra-ui/react';
 import {
 	createColumnHelper,
@@ -23,6 +27,7 @@ import * as React from 'react';
 import ChangeTime from './ChangeTime';
 import DeleteInterviewModal from './DeleteInterview';
 import StartSessionModal from './StartSession';
+import { SearchIcon } from '@chakra-ui/icons';
 
 // Define the RowObj type for the interview data
 type InterviewObj = {
@@ -58,6 +63,7 @@ const fakeInterviewsData: InterviewObj[] = [
 
 export default function InterviewTable() {
 	const [sorting, setSorting] = React.useState<SortingState>([]);
+	const [searchQuery, setSearchQuery] = React.useState('');
 	const textColor = useColorModeValue('secondaryGray.900', 'white');
 	const borderColor = useColorModeValue('gray.200', 'whiteAlpha.100');
 
@@ -137,8 +143,16 @@ export default function InterviewTable() {
 	];
 
 	const [data, setData] = React.useState(() => [...fakeInterviewsData]);
+
+	const filteredData = React.useMemo(() => {
+		return data.filter(interview =>
+			interview.job_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+			interview.interview_datetime.toLowerCase().includes(searchQuery.toLowerCase())
+		);
+	}, [data, searchQuery]);
+
 	const table = useReactTable({
-		data,
+		data: filteredData,
 		columns,
 		state: {
 			sorting
@@ -160,6 +174,17 @@ export default function InterviewTable() {
 				<Text color={textColor} fontSize='22px' fontWeight='700' lineHeight='100%'>
 					All your Interviews
 				</Text>
+				<InputGroup>
+					<InputLeftElement pointerEvents='none'>
+						<Icon as={SearchIcon} color='gray.300' />
+					</InputLeftElement>
+					<Input
+						type='text'
+						placeholder='Search interviews...'
+						value={searchQuery}
+						onChange={(e) => setSearchQuery(e.target.value)}
+					/>
+				</InputGroup>
 			</Flex>
 			<Box>
 				<Table variant='simple' color='gray.500' mb='24px' mt="12px">

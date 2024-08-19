@@ -1,5 +1,4 @@
-// Dashboard.js
-import { Portal, Box, useDisclosure, Button } from '@chakra-ui/react';
+import { Portal, Box, useDisclosure } from '@chakra-ui/react';
 import Footer from 'components/footer/FooterAdmin';
 import Navbar from 'components/navbar/NavbarAdmin';
 import Sidebar from 'components/sidebar/Sidebar';
@@ -55,7 +54,7 @@ export default function Dashboard(props: { [x: string]: any }) {
   };
 
   const getRoutes = (routes: RoutesType[]): any => {
-    return routes.map((route: RoutesType, key: any) => {
+    return routes.map((route: RoutesType, key: number) => {
       if (route.layout === '/admin' || route.layout === '/auth') {
         return (
           <Route path={`${route.path}`} element={route.component} key={key} />
@@ -125,6 +124,10 @@ export default function Dashboard(props: { [x: string]: any }) {
                 <Route
                   path="/"
                   element={<Navigate to="/admin/default" replace />}
+                />
+                <Route
+                  path="*"
+                  element={<Navigate to="/admin/404" replace />}
                 />
               </Routes>
             </Box>

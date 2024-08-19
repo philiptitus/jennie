@@ -15,8 +15,8 @@ export default function Auth() {
   const getRoute = () => {
     return window.location.pathname !== '/auth/full-screen-maps';
   };
-  const getRoutes = (routes: RoutesType[]): any => {
-    return routes.map((route: RoutesType, key: any) => {
+  const getRoutes = (routes: any[]) => {
+    return routes.map((route: any, key: number) => {
       if (route.layout === '/auth') {
         return (
           <Route path={`${route.path}`} element={route.component} key={key} />
@@ -55,6 +55,10 @@ export default function Auth() {
                 <Route
                   path="/"
                   element={<Navigate to="/auth/sign-in/default" replace />}
+                />
+                <Route
+                  path="*"
+                  element={<Navigate to="/auth/404" replace />}
                 />
               </Routes>
             </Box>

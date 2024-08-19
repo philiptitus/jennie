@@ -5,7 +5,7 @@ import FixedPlugin from 'components/fixedPlugin/FixedPlugin';
 import { NavLink } from 'react-router-dom';
 import { FaChevronLeft } from 'react-icons/fa';
 
-function AuthIllustration({ children, illustrationBackground, image }: { children: JSX.Element | string; illustrationBackground: string; image?: any }) {
+function AuthIllustration({ children, illustrationBackground, image }: { children: JSX.Element | string; illustrationBackground?: string; image?: string }) {
   return (
     <Flex position='relative' minH='100vh' w='100%'>
       {/* Main content area */}
@@ -37,7 +37,7 @@ function AuthIllustration({ children, illustrationBackground, image }: { childre
         transform='translateY(-50%)'
         w='45%'
         h='90%' // 10% smaller
-        bgImage={`url(${illustrationBackground || image})`}
+        bgImage={illustrationBackground ? `url(${illustrationBackground})` : image ? `url(${image})` : undefined}
         bgSize='contain'
         bgRepeat='no-repeat'
         bgPosition='center'
@@ -48,8 +48,8 @@ function AuthIllustration({ children, illustrationBackground, image }: { childre
 }
 
 AuthIllustration.propTypes = {
-  illustrationBackground: PropTypes.string.isRequired,
-  image: PropTypes.any,
+  illustrationBackground: PropTypes.string,
+  image: PropTypes.string,
   children: PropTypes.node.isRequired,
 };
 

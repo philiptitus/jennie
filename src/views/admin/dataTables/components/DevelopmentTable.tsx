@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
 	Box,
@@ -12,10 +12,15 @@ import {
 	Thead,
 	Tr,
 	useColorModeValue,
+	Input,
+	InputGroup,
+	InputLeftElement,
+	Icon
 } from '@chakra-ui/react';
 import { createColumnHelper, flexRender, useReactTable } from '@tanstack/react-table';
 import Card from 'components/card/Card';
 import { getCoreRowModel } from '@tanstack/react-table';
+import { SearchIcon } from '@chakra-ui/icons';
 
 type RowObj = {
 	id: number;
@@ -30,6 +35,7 @@ export default function DevelopmentTable() {
 	const textColor = useColorModeValue('secondaryGray.900', 'white');
 	const borderColor = useColorModeValue('gray.200', 'whiteAlpha.100');
 	const navigate = useNavigate();
+	const [searchQuery, setSearchQuery] = useState('');
 
 	// Data for the table
 	const data = useMemo<RowObj[]>(
@@ -113,8 +119,14 @@ export default function DevelopmentTable() {
 		[navigate, textColor]
 	);
 
+	const filteredData = useMemo(() => {
+		return data.filter(item =>
+			item.title.toLowerCase().includes(searchQuery.toLowerCase())
+		);
+	}, [data, searchQuery]);
+
 	const table = useReactTable({
-		data,
+		data: filteredData,
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 	});
@@ -125,6 +137,17 @@ export default function DevelopmentTable() {
 				<Text color={textColor} fontSize='22px' fontWeight='700' lineHeight='100%'>
 					Your Prep Resources
 				</Text>
+				<InputGroup>
+					<InputLeftElement pointerEvents='none'>
+						<Icon as={SearchIcon} color='gray.300' />
+					</InputLeftElement>
+					<Input
+						type='text'
+						placeholder='Search resources...'
+						value={searchQuery}
+						onChange={(e) => setSearchQuery(e.target.value)}
+					/>
+				</InputGroup>
 			</Flex>
 			<Box overflowY='auto'>
 				<Table variant='simple' color='gray.500' mb='24px' mt='12px'>

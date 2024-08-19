@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Avatar, Box, Button, Flex, Progress, 
   Table, Tbody, Td, Text, Th, Thead, Tr, 
-  useColorModeValue 
+  useColorModeValue, AlertDialog, AlertDialogBody, 
+  AlertDialogFooter, AlertDialogHeader, AlertDialogContent, 
+  AlertDialogOverlay 
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 import {
   createColumnHelper, flexRender, getCoreRowModel, 
   getSortedRowModel, SortingState, useReactTable 
@@ -27,7 +30,10 @@ export default function TopCreatorTable(props: { tableData: any }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState<any[]>([]);
   const [questionType, setQuestionType] = useState<string>('');
-  
+  const [isOpen, setIsOpen] = useState(false);
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  const navigate = useNavigate();
+
   const textColor = useColorModeValue('secondaryGray.900', 'white');
   const textColorSecondary = useColorModeValue("secondaryGray.600", "white");
   const borderColor = useColorModeValue('gray.200', 'whiteAlpha.100');
@@ -48,8 +54,14 @@ export default function TopCreatorTable(props: { tableData: any }) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       setStartInterview(false);
-      // Handle interview completion
+      setIsOpen(true);
+      console.log('Interview finished');
     }
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+    navigate('/admin/default');
   };
 
   const columns = [
@@ -162,6 +174,29 @@ export default function TopCreatorTable(props: { tableData: any }) {
           />
         )}
       </Box>
+
+      <AlertDialog
+        isOpen={isOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={handleClose}>
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Interview Completed
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Your interview session is finished. We will send your results to you very soon.
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={handleClose} colorScheme="blue">
+                Finish
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Flex>
   );
 }

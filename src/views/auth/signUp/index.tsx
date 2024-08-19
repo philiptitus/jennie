@@ -24,6 +24,7 @@ import illustration from "assets/img/auth/auth.png";
 import { FcGoogle } from "react-icons/fc";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
+import WelcomeComponent from "./Welcome";
 
 function SignUp() {
   // Chakra color mode
@@ -81,7 +82,7 @@ function SignUp() {
           mx={{ base: "auto", lg: "unset" }}
           me='auto'
           mb={{ base: "20px", md: "auto" }}>
-
+<WelcomeComponent/>
           <FormControl>
             <FormLabel
               display='flex'
