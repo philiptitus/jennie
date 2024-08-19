@@ -99,3 +99,4 @@ Connect with the community! Feel free to ask questions, report issues, and meet 
 ⭐️ [Copyright 2022 Simmmple](https://www.simmmple.com/?ref=readme-horizon-ts)
 
 📄 [Horizon UI License](https://www.simmmple.com/licenses?ref=readme-horizon-ts)
+
