@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, IconButton, useColorModeValue } from '@chakra-ui/react';
-import { ChatIcon, QuestionIcon } from '@chakra-ui/icons';
+import { Box, IconButton, useColorModeValue, useToast, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button } from '@chakra-ui/react';
+import { ChatIcon, QuestionIcon, ViewIcon, ExternalLinkIcon } from '@chakra-ui/icons';
+import { useNavigate } from 'react-router-dom';
 
 import VideoPlayer from './VideoPlayer';
 import SliderModal from './SliderModal'; // Import the SliderModal component
@@ -21,12 +22,16 @@ const InterviewQuestionNative: React.FC<InterviewQuestionNativeProps> = ({ quest
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const [isSliderOpen2, setIsSliderOpen2] = useState(false);
+  const [showVideoPlayer, setShowVideoPlayer] = useState(false); // State to toggle between Active and VideoPlayer
+  const [isExitModalOpen, setIsExitModalOpen] = useState(false); // State to manage the exit modal
 
   const globalTimerRef = useRef<NodeJS.Timeout | null>(null);
   const questionTimerRef = useRef<NodeJS.Timeout | null>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const buttonColorScheme = useColorModeValue('teal', 'orange');
   const iconButtonColorScheme = useColorModeValue('blue', 'orange');
+  const navigate = useNavigate();
+  const toast = useToast();
 
   useEffect(() => {
     speak("Welcome to the interview. Let's begin.")
@@ -89,9 +94,12 @@ const InterviewQuestionNative: React.FC<InterviewQuestionNativeProps> = ({ quest
   const startTimer = () => {
     globalTimerRef.current = setInterval(() => {
       setTimer((prevTimer) => {
-        if (prevTimer >= 60) {
+        if (prevTimer >= 1800) { // 30 minutes
           clearInterval(globalTimerRef.current as NodeJS.Timeout);
-          speak("The interview has ended. Thank you.")
+          speak("Sorry But you have exceeded your time limit")
+          showTimeUpAlert();
+        } else if (prevTimer >= 750) { // 12.5 minutes
+          speak("We have used up half of our time here, please try to be a little quicker")
             .then(onNextQuestion);
         }
         return prevTimer + 1;
@@ -149,11 +157,42 @@ const InterviewQuestionNative: React.FC<InterviewQuestionNativeProps> = ({ quest
     setIsSliderOpen2(!isSliderOpen2);
   };
 
+  const toggleVideoPlayer = () => {
+    setShowVideoPlayer(!showVideoPlayer);
+  };
+
+  const showTimeUpAlert = () => {
+    toast({
+      title: "Time's up!",
+      description: "Sorry, but your time is up. I am currently marking your work right now. Please be faster next time.",
+      status: "warning",
+      duration: 5000,
+      isClosable: true,
+      onCloseComplete: () => navigate('/admin/default/'),
+    });
+  };
+
+  const openExitModal = () => {
+    setIsExitModalOpen(true);
+  };
+
+  const closeExitModal = () => {
+    setIsExitModalOpen(false);
+  };
+
+  const confirmExit = () => {
+    closeExitModal();
+    navigate('/admin/default/');
+  };
+
   return (
     <Box style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       <Box flex="1" position="relative" bg="gray.800" overflow="hidden">
-        {/* <VideoPlayer isSpeaking={isSpeaking} /> */}
-        <Active/>
+        {showVideoPlayer ? (
+          <VideoPlayer isSpeaking={isSpeaking} />
+        ) : (
+          <Active />
+        )}
         <Box position="absolute" bottom="20px" right="20px" display="flex" gap="10px">
           <IconButton
             icon={<ChatIcon color="orange.500" />}
@@ -166,6 +205,20 @@ const InterviewQuestionNative: React.FC<InterviewQuestionNativeProps> = ({ quest
             icon={<QuestionIcon color="orange.500" />}
             onClick={toggleSlider2}
             aria-label="Open Agent Slider"
+            bg="transparent"
+            _hover={{ bg: 'gray.700' }}
+          />
+          <IconButton
+            icon={<ViewIcon color="orange.500" />}
+            onClick={toggleVideoPlayer}
+            aria-label="Toggle Video Player"
+            bg="transparent"
+            _hover={{ bg: 'gray.700' }}
+          />
+          <IconButton
+            icon={<ExternalLinkIcon color="orange.500" />}
+            onClick={openExitModal}
+            aria-label="Exit Interview Room"
             bg="transparent"
             _hover={{ bg: 'gray.700' }}
           />
@@ -194,6 +247,24 @@ const InterviewQuestionNative: React.FC<InterviewQuestionNativeProps> = ({ quest
         isSpeaking={isSpeaking}
         setIsSpeaking={setIsSpeaking}
       />
+      <Modal isOpen={isExitModalOpen} onClose={closeExitModal}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Exit Interview Room</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            Are you sure you want to leave the interview room?
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="red" mr={3} onClick={confirmExit}>
+              Yes
+            </Button>
+            <Button variant="ghost" onClick={closeExitModal}>
+              No
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };
