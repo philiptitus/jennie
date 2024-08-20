@@ -45,6 +45,7 @@ import Avatar3 from 'assets/img/avatars/avatar3.png';
 import Avatar4 from 'assets/img/avatars/avatar4.png';
 import tableDataTopCreators from 'views/admin/marketplace/variables/tableDataTopCreators'; 
 import NewInterview from './components/New';
+import NativeInterview from './components/NativeInterview';
 
 export default function Marketplace() {
 	// Chakra Color Mode
@@ -60,7 +61,9 @@ export default function Marketplace() {
 				display={{ base: 'block', l: 'grid' }}>
 				<Flex flexDirection='column' gridArea={{ xl: '1 / 3 / 2 / 4', '2xl': '1 / 2 / 2 / 3' }}>
 					<Card px='0px' mb='20px'>
-						<TableTopCreators tableData={tableDataTopCreators}  />
+					<NativeInterview tableData={tableDataTopCreators}  />
+
+						{/* <TableTopCreators tableData={tableDataTopCreators}  /> */}
 					</Card>
 					{/* <Card p='0px'>
 						<Flex
