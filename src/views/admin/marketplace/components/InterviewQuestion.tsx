@@ -3,9 +3,10 @@ import { Box, IconButton, useColorModeValue } from '@chakra-ui/react';
 import { ChatIcon, QuestionIcon } from '@chakra-ui/icons';
 
 import VideoPlayer from './VideoPlayer';
-import SliderModal from './SliderModal'; // Import the SliderModal component
-import 'responsivevoice'; // Import the library
+import SliderModal from './SliderModal';
 import QuestionInputModal from './QuestionInput';
+import InterviewTimer from './InterviewQuestion/InterviewTimer';
+import InterviewSpeech from './InterviewQuestion/InterviewSpeech';
 
 type InterviewQuestionProps = {
   question: any;
@@ -13,50 +14,15 @@ type InterviewQuestionProps = {
   onNextQuestion: () => void;
 };
 
-declare global {
-  interface Window {
-    responsiveVoice: any;
-    webkitSpeechRecognition: any;
-  }
-}
-
 const InterviewQuestion: React.FC<InterviewQuestionProps> = ({ question, questionType, onNextQuestion }) => {
   const [answer, setAnswer] = useState('');
-  const [timer, setTimer] = useState(0);
-  const [questionTimer, setQuestionTimer] = useState(0);
-  const [isSpeaking, setIsSpeaking] = useState(false);
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const [isSliderOpen2, setIsSliderOpen2] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
-  const globalTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const questionTimerRef = useRef<NodeJS.Timeout | null>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const buttonColorScheme = useColorModeValue('teal', 'orange');
   const iconButtonColorScheme = useColorModeValue('blue', 'orange');
-
-  useEffect(() => {
-    speak("Welcome to the interview. Let's begin.")
-      .then(() => startTimer());
-
-    return () => {
-      window.responsiveVoice.cancel();
-      stopTimer();
-    };
-  }, []);
-
-  useEffect(() => {
-    setAnswer('');
-    setQuestionTimer(0);
-    stopQuestionTimer();
-
-    speak(question.question)
-      .then(() => startQuestionTimer());
-
-    return () => {
-      window.responsiveVoice.cancel();
-      stopQuestionTimer();
-    };
-  }, [question]);
 
   useEffect(() => {
     // Initialize speech recognition
@@ -77,68 +43,11 @@ const InterviewQuestion: React.FC<InterviewQuestionProps> = ({ question, questio
     }
   }, []);
 
-  const speak = (text: string): Promise<void> => {
-    return new Promise<void>((resolve) => {
-      if (isSpeaking) {
-        window.responsiveVoice.cancel();
-      }
-
-      setIsSpeaking(true);
-      window.responsiveVoice.speak(text, "Australian Female", {
-        onstart: () => setIsSpeaking(true),
-        onend: () => {
-          setIsSpeaking(false);
-          resolve();
-        }
-      });
-    });
-  };
-
-  const startTimer = () => {
-    globalTimerRef.current = setInterval(() => {
-      setTimer((prevTimer) => {
-        if (prevTimer >= 60) {
-          clearInterval(globalTimerRef.current as NodeJS.Timeout);
-          speak("The interview has ended. Thank you.")
-            .then(onNextQuestion);
-        }
-        return prevTimer + 1;
-      });
-    }, 1000);
-  };
-
-  const stopTimer = () => {
-    if (globalTimerRef.current) {
-      clearInterval(globalTimerRef.current);
-    }
-  };
-
-  const startQuestionTimer = () => {
-    questionTimerRef.current = setInterval(() => {
-      setQuestionTimer((prevTimer) => {
-        if (prevTimer >= 15) {
-          clearInterval(questionTimerRef.current as NodeJS.Timeout);
-          speak("I will just move on to the next question.")
-            .then(handleSkip);
-        }
-        return prevTimer + 1;
-      });
-    }, 1000);
-  };
-
-  const stopQuestionTimer = () => {
-    if (questionTimerRef.current) {
-      clearInterval(questionTimerRef.current);
-    }
-  };
-
   const handleSkip = () => {
-    stopQuestionTimer();
     onNextQuestion();
   };
 
   const handleSubmit = () => {
-    stopQuestionTimer();
     onNextQuestion();
   };
 
@@ -153,12 +62,15 @@ const InterviewQuestion: React.FC<InterviewQuestionProps> = ({ question, questio
   const toggleSlider = () => {
     setIsSliderOpen(!isSliderOpen);
   };
+
   const toggleSlider2 = () => {
     setIsSliderOpen2(!isSliderOpen2);
   };
 
   return (
     <Box style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+      <InterviewTimer onNextQuestion={onNextQuestion} />
+      <InterviewSpeech question={question} onNextQuestion={onNextQuestion} />
       <Box flex="1" position="relative" bg="gray.800" overflow="hidden">
         <VideoPlayer isSpeaking={isSpeaking} />
         <Box position="absolute" bottom="20px" right="20px" display="flex" gap="10px">

@@ -53,6 +53,33 @@ const interviewBlocks = [
 	},
 ];
 
+
+
+// Example fake data for jobs
+const fakeJobsData= [
+	{
+	  id: '1',
+	  title: 'Software Engineer',
+	  description: 'Responsible for developing and maintaining web applications.',
+	  mockup_interview_date: '2024-08-20',
+	  job_url: 'https://example.com/software-engineer',
+	},
+	{
+	  id: '2',
+	  title: 'Product Manager',
+	  description: 'Oversee the product lifecycle and collaborate with cross-functional teams.',
+	  mockup_interview_date: '2024-09-01',
+	  job_url: 'https://example.com/product-manager',
+	},
+	{
+	  id: '3',
+	  title: 'Data Analyst',
+	  description: 'Analyze data and provide insights to support business decisions.',
+	  mockup_interview_date: '2024-08-25',
+	  job_url: 'https://example.com/data-analyst',
+	},
+  ];
+
 // Fake Data for Interview Coding Questions
 const interviewCodingQuestions = [
 	{
@@ -127,4 +154,54 @@ const interviewCodingQuestions = [
 	},
 ];
 
-export { interviewBlocks, interviewCodingQuestions };
+
+const fakeInterviewsData = [
+	{
+	  id: 1,
+	  job_name: 'Software Engineer',
+	  interview_datetime: '2024-08-20 10:00 AM',
+	  passed: true
+	},
+	{
+	  id: 2,
+	  job_name: 'Product Manager',
+	  interview_datetime: '2024-09-01 02:00 PM',
+	  passed: false
+	},
+	{
+	  id: 3,
+	  job_name: 'Data Analyst',
+	  interview_datetime: '2024-08-25 11:30 AM',
+	  passed: true
+	}
+  ];
+
+  const data = [
+		{
+			id: 1,
+			question: 'What is React?',
+			answer: 'React is a JavaScript library for building user interfaces.',
+			my_answer: 'A library for building UIs',
+			attempted: true,
+			score: 85.5,
+		},
+		{
+			id: 2,
+			question: 'What is Django REST Framework?',
+			answer: 'Django REST Framework is a powerful toolkit for building Web APIs in Django.',
+			my_answer: '',
+			attempted: false,
+			score: 70.0,
+		},
+		{
+			id: 3,
+			question: 'What is GraphQL?',
+			answer: 'GraphQL is a query language for APIs and a runtime for executing those queries.',
+			my_answer: 'A query language for APIs',
+			attempted: true,
+			score: 92.0,
+		},
+	]
+
+
+export { interviewBlocks, interviewCodingQuestions, fakeJobsData, fakeInterviewsData, data };
