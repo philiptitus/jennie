@@ -1,8 +1,6 @@
 {
-
   "name": "horizon-ui-chakra-typescript",
   "proxy": "https://jennie-1720624972853.ue.r.appspot.com",
-
   "version": "2.0.0",
   "private": true,
   "dependencies": {
@@ -55,7 +53,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "npm install --legacy-peer-deps && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
