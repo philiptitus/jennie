@@ -17,44 +17,34 @@ import {
   List,
   ListItem,
 } from '@chakra-ui/react';
-// Chakra imports
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
-// Custom components
 import Card from 'components/card/Card';
-import events from './events'; // Importing the events
+import { fakeInterviewsData } from 'views/admin/marketplace/components/data'; // Importing the new data
 
 type CalendarValue = Date | [Date, Date] | null;
 
-export default function MiniCalendar(props: {
-  selectRange: boolean;
-  [x: string]: any;
-}) {
+export default function MiniCalendar(props: { selectRange: boolean; [x: string]: any; }) {
   const { selectRange, ...rest } = props;
   const [value, setValue] = useState<CalendarValue>(new Date());
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedEvents, setSelectedEvents] = useState<{ date: string; events: { title: string; time: string }[] } | null>(null);
-
-  // Helper function to format the event date to match the calendar date
-  const formatEventDate = (dateString: string) => {
-    const [day, month, year] = dateString
-      .replace(/(st|nd|rd|th)/, '')
-      .split(' ');
-    return new Date(`${month} ${day}, ${year}`).toLocaleDateString('en-GB', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
-  };
+  const [selectedEvents, setSelectedEvents] = useState<{ date: string; events: { job_name: string; interview_datetime: string }[] } | null>(null);
 
   const handleChange = (value: CalendarValue) => {
     setValue(value);
 
     const formattedDate = value instanceof Date ? value.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
     
-    const dayEvents = events.filter(event => formatEventDate(event.date) === formattedDate);
+    const dayEvents = fakeInterviewsData.filter(event => {
+      const eventDate = new Date(event.interview_datetime).toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
+      return eventDate === formattedDate;
+    });
 
     if (dayEvents.length > 0) {
-      setSelectedEvents({ date: formattedDate, events: dayEvents.map(event => ({ title: event.title, time: event.time })) });
+      setSelectedEvents({ date: formattedDate, events: dayEvents.map(event => ({ job_name: event.job_name, interview_datetime: event.interview_datetime })) });
       onOpen();
     }
   };
@@ -66,7 +56,14 @@ export default function MiniCalendar(props: {
         month: 'long',
         year: 'numeric',
       });
-      if (events.some(event => formatEventDate(event.date) === formattedDate)) {
+      if (fakeInterviewsData.some(event => {
+        const eventDate = new Date(event.interview_datetime).toLocaleDateString('en-GB', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        });
+        return eventDate === formattedDate;
+      })) {
         return 'highlight';
       }
     }
@@ -100,13 +97,13 @@ export default function MiniCalendar(props: {
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Events on {selectedEvents.date}</ModalHeader>
+            <ModalHeader>Interviews on {selectedEvents.date}</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <List spacing={3}>
                 {selectedEvents.events.map((event, index) => (
                   <ListItem key={index}>
-                    <Text fontWeight="bold">{event.time}:</Text> {event.title}
+                    <Text fontWeight="bold">{new Date(event.interview_datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}:</Text> {event.job_name}
                   </ListItem>
                 ))}
               </List>

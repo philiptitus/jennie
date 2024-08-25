@@ -11,25 +11,35 @@ import {
 	Text,
 	useColorModeValue,
 	useColorMode,
+	Spinner,
+	useToast,
 } from '@chakra-ui/react';
 // Custom Components
 import { ItemContent } from 'components/menu/ItemContent';
-import { SearchBar } from 'components/navbar/searchBar/SearchBar';
 import { SidebarResponsive } from 'components/sidebar/Sidebar';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect } from 'react';
 // Assets
 import { NavLink, useNavigate } from "react-router-dom";
 
 import { MdNotificationsNone } from 'react-icons/md';
 import { IoMdMoon, IoMdSunny } from 'react-icons/io';
-import { FaEthereum } from 'react-icons/fa';
 import routes from 'routes';
+
+// Redux Imports
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from 'server/actions/userAction'; // Update with the correct path to your actions
 
 export default function HeaderLinks(props: { secondary: boolean }) {
 	const { secondary } = props;
 	const { colorMode, toggleColorMode } = useColorMode();
 	const navigate = useNavigate(); // Initialize the useNavigate hook
+	const dispatch = useDispatch();
+	const toast = useToast();
+
+	// Assuming you have a loading and error state in your redux store
+	const { loading, error, userInfo } = useSelector((state: RootState) => state.userLogin);
+
 	const filteredRoutes = routes.filter(route => route.layout !== '/auth' && route.path !== '/proom');
 
 	// Chakra Color Mode
@@ -47,9 +57,30 @@ export default function HeaderLinks(props: { secondary: boolean }) {
 
 	// Logout handler function
 	const handleLogout = () => {
-		// Add any additional logout logic here (e.g., clearing tokens)
-		navigate('/auth/sign-in'); // Redirect to the sign-in page
+		dispatch(logout());
 	};
+
+	useEffect(() => {
+		if (error) {
+			toast({
+				title: 'Error',
+				description: error,
+				status: 'error',
+				duration: 5000,
+				isClosable: true,
+			});
+		}
+		if (!userInfo) {
+			toast({
+				title: 'Success',
+				description: 'Logged out successfully',
+				status: 'success',
+				duration: 5000,
+				isClosable: true,
+			});
+			navigate('/auth/sign-in'); // Redirect to the sign-in page
+		}
+	}, [error, userInfo, navigate, toast]);
 
 	return (
 		<Flex
@@ -61,6 +92,7 @@ export default function HeaderLinks(props: { secondary: boolean }) {
 			p='10px'
 			borderRadius='30px'
 			boxShadow={shadow}>
+			{loading && <Spinner />}
 			{/* <SearchBar
 				mb={() => {
 					if (secondary) {
@@ -89,7 +121,7 @@ export default function HeaderLinks(props: { secondary: boolean }) {
 					maxW={{ base: '360px', md: 'unset' }}>
 					<Flex w='100%' mb='20px'>
 						<Text fontSize='md' fontWeight='600' color={textColor}>
-						Your Notifications
+							Your Notifications
 						</Text>
 					</Flex>
 					<Flex flexDirection='column'>
@@ -125,7 +157,7 @@ export default function HeaderLinks(props: { secondary: boolean }) {
 					<Avatar
 						_hover={{ cursor: 'pointer' }}
 						color='white'
-						name='Philip Titus'
+						name={userInfo?.name}
 						bg='#11047A'
 						size='sm'
 						w='40px'
@@ -144,7 +176,7 @@ export default function HeaderLinks(props: { secondary: boolean }) {
 							fontSize='sm'
 							fontWeight='700'
 							color={textColor}>
-							👋&nbsp; Ola, Adela
+							👋&nbsp; Ola, {userInfo?.username}
 						</Text>
 					</Flex>
 					<Flex flexDirection='column' p='10px'>

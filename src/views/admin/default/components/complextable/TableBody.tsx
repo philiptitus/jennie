@@ -8,7 +8,7 @@ type RowObj = {
   id: string;
   title: string;
   description: string;
-  mockup_interview_date: string;
+  actual_interview_date: string;
   job_url: string;
 };
 

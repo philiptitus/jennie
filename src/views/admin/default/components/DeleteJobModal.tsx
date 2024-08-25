@@ -13,7 +13,8 @@ import {
   IconButton, 
   Flex,
   Text,
-  useColorModeValue 
+  useColorModeValue,
+  useToast,
 } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons';
 
@@ -23,10 +24,21 @@ interface DeleteJobModalProps {
 
 export default function DeleteJobModal({ jobId }: DeleteJobModalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
   const handleDelete = () => {
     console.log(`Deleting job with ID: ${jobId}`);
+    
     // Implement the job deletion logic here
+    
+    toast({
+      title: "Job Deleted",
+      description: `The job with ID ${jobId} was successfully deleted.`,
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
+
     onClose();
   };
 

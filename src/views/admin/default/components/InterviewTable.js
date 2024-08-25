@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   Box,
   Flex,
@@ -9,7 +9,10 @@ import {
   InputLeftElement,
   Icon,
   useColorModeValue,
-  Checkbox
+  Checkbox,
+  IconButton,
+  useToast,
+  Spinner,
 } from '@chakra-ui/react';
 import {
   createColumnHelper,
@@ -21,28 +24,25 @@ import {
 import ChangeTime from './ChangeTime';
 import DeleteInterviewModal from './DeleteInterview';
 import StartSessionModal from './StartSession';
-import { SearchIcon } from '@chakra-ui/icons';
+import { SearchIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import InterviewTableHeader from './InterviewTable/InterviewTableHeader';
 import InterviewTableBody from './InterviewTable/InterviewTableBody';
-import { fakeInterviewsData } from 'views/admin/marketplace/components/data';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserInterviewList, resetUserInterviewList } from 'server/actions/actions1'; // Update the path accordingly
 
-type InterviewObj = {
-  id: number;
-  job_name: string;
-  interview_datetime: string;
-  passed: boolean;
-};
-
-const columnHelper = createColumnHelper<InterviewObj>();
-
-// Example fake data for interviews with IDs
-
+const columnHelper = createColumnHelper();
 
 export default function InterviewTable() {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const [sorting, setSorting] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [visibleInterviews, setVisibleInterviews] = useState(10);
   const textColor = useColorModeValue('secondaryGray.900', 'white');
   const borderColor = useColorModeValue('gray.200', 'whiteAlpha.100');
+  const toast = useToast();
+  const dispatch = useDispatch();
+
+  const interviewList = useSelector((state) => state.userInterviewList);
+  const { loading, error, interviews, success } = interviewList;
 
   const columns = [
     columnHelper.accessor('job_name', {
@@ -56,7 +56,7 @@ export default function InterviewTable() {
           Job Name
         </Text>
       ),
-      cell: (info: any) => (
+      cell: (info) => (
         <Flex align='center'>
           <Text color={textColor} fontSize='sm' fontWeight='700'>
             {info.getValue()}
@@ -75,7 +75,7 @@ export default function InterviewTable() {
           Interview Date & Time
         </Text>
       ),
-      cell: (info: any) => (
+      cell: (info) => (
         <Text color={textColor} fontSize='sm'>
           {info.getValue()}
         </Text>
@@ -92,53 +92,95 @@ export default function InterviewTable() {
           Passed
         </Text>
       ),
-      cell: (info: any) => (
+      cell: (info) => (
         <Checkbox isChecked={info.getValue()} isReadOnly />
       )
     }),
     columnHelper.display({
       id: 'change_time',
       header: () => null, // No header for this column
-      cell: (info: any) => (
-        <ChangeTime interviewId={info.row.original.id} />
-      ),
+      cell: (info) => {
+        const interviewDateTime = new Date(info.row.original.interview_datetime);
+        const currentDateTime = new Date();
+        if (interviewDateTime > currentDateTime) {
+          return <ChangeTime interviewId={info.row.original.id} />;
+        }
+        return null;
+      },
     }),
     columnHelper.display({
       id: 'delete_interview',
       header: () => null, // No header for this column
-      cell: (info: any) => (
+      cell: (info) => (
         <DeleteInterviewModal interviewId={info.row.original.id} />
       ),
     }),
     columnHelper.display({
       id: 'start_session',
       header: () => null, // No header for this column
-      cell: (info: any) => (
-        <StartSessionModal interviewId={info.row.original.id} />
-      ),
+      cell: (info) => {
+        const interviewDateTime = new Date(info.row.original.interview_datetime);
+        const currentDateTime = new Date();
+        if (interviewDateTime > currentDateTime) {
+          return <StartSessionModal interviewId={info.row.original.id} />;
+        }
+        return null;
+      },
     }),
   ];
 
-  const [data, setData] = React.useState(() => [...fakeInterviewsData]);
+  useEffect(() => {
+    dispatch(getUserInterviewList());
 
-  const filteredData = React.useMemo(() => {
-    return data.filter(interview =>
+    return () => {
+      dispatch(resetUserInterviewList());
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: "Error",
+        description: error,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+
+    if (success && interviews.length === 0) {
+      toast({
+        title: "No Interviews",
+        description: "You don't have any interviews on my platform yet.",
+        status: "info",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [error, loading, interviews, toast]);
+
+  const filteredData = useMemo(() => {
+    return interviews.filter(interview =>
       interview.job_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       interview.interview_datetime.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [data, searchQuery]);
+    ).slice(0, visibleInterviews);
+  }, [interviews, searchQuery, visibleInterviews]);
 
   const table = useReactTable({
     data: filteredData,
     columns,
     state: {
-      sorting
+      sorting,
     },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    debugTable: true
+    debugTable: true,
   });
+
+  const handleLoadMore = () => {
+    setVisibleInterviews(prev => prev + 10);
+  };
 
   return (
     <Box
@@ -164,11 +206,26 @@ export default function InterviewTable() {
         </InputGroup>
       </Flex>
       <Box>
-        <Table variant='simple' color='gray.500' mb='24px' mt="12px">
-          <InterviewTableHeader headerGroups={table.getHeaderGroups()} borderColor={borderColor} />
-          <InterviewTableBody rows={table.getRowModel().rows} />
-        </Table>
+        {loading ? (
+          <Flex justifyContent="center" alignItems="center" h="100%">
+            <Spinner />
+          </Flex>
+        ) : (
+          <Table variant='simple' color='gray.500' mb='24px' mt="12px">
+            <InterviewTableHeader headerGroups={table.getHeaderGroups()} borderColor={borderColor} />
+            <InterviewTableBody rows={table.getRowModel().rows} />
+          </Table>
+        )}
       </Box>
+      {interviews.length > visibleInterviews && (
+        <Flex justifyContent="center" mt="4">
+          <IconButton
+            icon={<ChevronDownIcon />}
+            onClick={handleLoadMore}
+            aria-label="Load More"
+          />
+        </Flex>
+      )}
     </Box>
   );
 }

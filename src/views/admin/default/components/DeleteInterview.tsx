@@ -13,7 +13,8 @@ import {
   IconButton, 
   Flex,
   Text,
-  useColorModeValue 
+  useColorModeValue,
+  useToast,
 } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons';
 
@@ -23,10 +24,20 @@ interface DeleteInterviewModalProps {
 
 export default function DeleteInterviewModal({ interviewId }: DeleteInterviewModalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
   const handleDelete = () => {
     console.log(`Deleting interview with ID: ${interviewId}`);
     // Implement the interview deletion logic here
+
+    toast({
+      title: "Interview Deleted",
+      description: `Interview with ID ${interviewId} has been successfully deleted.`,
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
+
     onClose();
   };
 

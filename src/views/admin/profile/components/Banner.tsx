@@ -12,6 +12,8 @@ export default function Banner(props: {
   [x: string]: any;
 }) {
   const { banner, avatar, name, bio, email, dateJoined, ...rest } = props;
+
+
   // Chakra Color Mode
   const textColorPrimary = useColorModeValue('secondaryGray.900', 'white');
   const textColorSecondary = 'gray.400';
@@ -24,9 +26,7 @@ export default function Banner(props: {
       <Text color={textColorPrimary} fontWeight='bold' fontSize='xl' mt='10px'>
         {name}
       </Text>
-      <Text color={textColorSecondary} fontSize='sm'>
-        {bio}
-      </Text>
+
       <Flex w='max-content' mx='auto' mt='26px' flexDirection='column' alignItems='center'>
         <Text color={textColorPrimary} fontSize='md' fontWeight='500'>
           {email}

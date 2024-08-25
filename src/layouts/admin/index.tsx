@@ -66,7 +66,7 @@ export default function Dashboard(props: { [x: string]: any }) {
   };
 
   // Filter out auth routes and /admin/proom route
-  const filteredRoutes = routes.filter(route => route.layout !== '/auth' && route.path !== '/proom');
+  const filteredRoutes = routes.filter(route => route.layout !== '/auth' && route.path !== '/proom/:id');
 
   document.documentElement.dir = 'ltr';
   const { onOpen } = useDisclosure();

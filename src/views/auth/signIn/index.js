@@ -1,6 +1,5 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
-// Chakra imports
+import React, { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -15,36 +14,63 @@ import {
   InputRightElement,
   Text,
   useColorModeValue,
+  useToast,
+  Spinner,
 } from "@chakra-ui/react";
-// Custom components
-import { HSeparator } from "components/separator/Separator";
-import DefaultAuth from "layouts/auth/Default";
-// Assets
-import illustration from "assets/img/auth/auth.png";
-import { FcGoogle } from "react-icons/fc";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
-import WelcomeComponent from "./Welcome";
+import { HSeparator } from "components/separator/Separator";
+import DefaultAuth from "layouts/auth/Default";
+import illustration from "assets/img/auth/auth.png";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "server/actions/userAction"; // Update the path accordingly
+import { RootState } from "server/storeTypes"; // Update the path accordingly
 
-function SignUp() {
+function SignIn() {
   // Chakra color mode
   const textColor = useColorModeValue("orange.700", "white");
   const textColorSecondary = "gray.400";
   const textColorDetails = useColorModeValue("orange.700", "secondaryGray.600");
   const textColorBrand = useColorModeValue("brand.500", "white");
   const brandStars = useColorModeValue("brand.500", "brand.400");
-  const googleBg = useColorModeValue("secondaryGray.300", "whiteAlpha.200");
-  const googleText = useColorModeValue("orange.700", "white");
-  const googleHover = useColorModeValue(
-    { bg: "gray.200" },
-    { bg: "whiteAlpha.300" }
-  );
-  const googleActive = useColorModeValue(
-    { bg: "secondaryGray.300" },
-    { bg: "whiteAlpha.200" }
-  );
-  const [show, setShow] = React.useState(false);
+  const [show, setShow] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const toast = useToast();
+  const dispatch = useDispatch();
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { error, loading, userInfo, success } = userLogin;
   const handleClick = () => setShow(!show);
+
+  const handleSubmit = () => {
+    dispatch(login(email, password));
+  };
+
+  React.useEffect(() => {
+    if (userInfo) {
+      toast({
+        title: "Welcome Back!",
+        description: "You have successfully signed in.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      navigate("/admin/default");
+    }
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: error,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [userInfo, error, navigate, toast]);
+
   return (
     <DefaultAuth illustrationBackground={illustration} image={illustration}>
       <Flex
@@ -61,7 +87,7 @@ function SignUp() {
         flexDirection='column'>
         <Box me='auto'>
           <Heading color={textColor} fontSize='36px' mb='10px'>
-            Sign Up
+            Sign In
           </Heading>
           <Text
             mb='36px'
@@ -69,7 +95,7 @@ function SignUp() {
             color={textColorSecondary}
             fontWeight='400'
             fontSize='md'>
-            Enter your details to create your account!
+            Enter your email and password to sign in!
           </Text>
         </Box>
         <Flex
@@ -82,7 +108,14 @@ function SignUp() {
           mx={{ base: "auto", lg: "unset" }}
           me='auto'
           mb={{ base: "20px", md: "auto" }}>
-<WelcomeComponent/>
+
+          <Flex align='center' mb='25px'>
+            <HSeparator />
+            <Text color='gray.400' mx='14px'>
+              or
+            </Text>
+            <HSeparator />
+          </Flex>
           <FormControl>
             <FormLabel
               display='flex'
@@ -94,7 +127,7 @@ function SignUp() {
               Email<Text color={brandStars}>*</Text>
             </FormLabel>
             <Input
-              isRequired={true}
+              isRequired
               variant='auth'
               fontSize='sm'
               ms={{ base: "0px", md: "0px" }}
@@ -103,26 +136,8 @@ function SignUp() {
               mb='24px'
               fontWeight='500'
               size='lg'
-            />
-            <FormLabel
-              display='flex'
-              ms='4px'
-              fontSize='sm'
-              fontWeight='500'
-              color={textColor}
-              mb='8px'>
-              Username<Text color={brandStars}>*</Text>
-            </FormLabel>
-            <Input
-              isRequired={true}
-              variant='auth'
-              fontSize='sm'
-              ms={{ base: "0px", md: "0px" }}
-              type='text'
-              placeholder='Your username'
-              mb='24px'
-              fontWeight='500'
-              size='lg'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <FormLabel
               ms='4px'
@@ -134,13 +149,15 @@ function SignUp() {
             </FormLabel>
             <InputGroup size='md'>
               <Input
-                isRequired={true}
+                isRequired
                 fontSize='sm'
                 placeholder='Min. 8 characters'
                 mb='24px'
                 size='lg'
                 type={show ? "text" : "password"}
                 variant='auth'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <InputRightElement display='flex' alignItems='center' mt='4px'>
                 <Icon
@@ -151,41 +168,42 @@ function SignUp() {
                 />
               </InputRightElement>
             </InputGroup>
-            <FormLabel
-              ms='4px'
-              fontSize='sm'
-              fontWeight='500'
-              color={textColor}
-              display='flex'>
-              Confirm Password<Text color={brandStars}>*</Text>
-            </FormLabel>
-            <InputGroup size='md'>
-              <Input
-                isRequired={true}
-                fontSize='sm'
-                placeholder='Confirm your password'
-                mb='24px'
-                size='lg'
-                type={show ? "text" : "password"}
-                variant='auth'
-              />
-              <InputRightElement display='flex' alignItems='center' mt='4px'>
-                <Icon
-                  color={textColorSecondary}
-                  _hover={{ cursor: "pointer" }}
-                  as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
-                  onClick={handleClick}
+            <Flex justifyContent='space-between' align='center' mb='24px'>
+              <FormControl display='flex' alignItems='center'>
+                <Checkbox
+                  id='remember-login'
+                  colorScheme='brandScheme'
+                  me='10px'
                 />
-              </InputRightElement>
-            </InputGroup>
+                <FormLabel
+                  htmlFor='remember-login'
+                  mb='0'
+                  fontWeight='normal'
+                  color={textColor}
+                  fontSize='sm'>
+                  Keep me logged in
+                </FormLabel>
+              </FormControl>
+              <NavLink to='/auth/forgot-password'>
+                <Text
+                  color={textColorBrand}
+                  fontSize='sm'
+                  w='124px'
+                  fontWeight='500'>
+                  Forgot password?
+                </Text>
+              </NavLink>
+            </Flex>
             <Button
               fontSize='sm'
               variant='brand'
               fontWeight='500'
               w='100%'
-              h='50'
-              mb='24px'>
-              Sign Up
+              h='50px'
+              mb='24px'
+              onClick={handleSubmit}
+              isLoading={loading}>
+              {loading ? <Spinner /> : "Sign In"}
             </Button>
           </FormControl>
           <Flex
@@ -195,14 +213,14 @@ function SignUp() {
             maxW='100%'
             mt='0px'>
             <Text color={textColorDetails} fontWeight='400' fontSize='14px'>
-              Already have an account?
-              <NavLink to='/auth/sign-in'>
+              Not registered yet?
+              <NavLink to='/auth/sign-up'>
                 <Text
                   color={textColorBrand}
                   as='span'
                   ms='5px'
                   fontWeight='500'>
-                  Sign In
+                  Create an Account
                 </Text>
               </NavLink>
             </Text>
@@ -213,4 +231,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default SignIn;

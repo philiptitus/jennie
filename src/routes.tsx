@@ -64,7 +64,7 @@ const routes = [
     name: 'Prep Material',
     layout: '/admin',
     icon: <Icon as={MdAssignment} width="20px" height="20px" color="inherit" />,
-    path: '/proom',
+    path: '/proom/:id',
     component: <Prep />,
   },
   {

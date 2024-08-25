@@ -1,15 +1,47 @@
-import { Box, Button, Text, useColorModeValue, useDisclosure } from '@chakra-ui/react';
+import React, { useEffect } from "react";
+import { Box, Button, Text, useColorModeValue, useDisclosure, useToast, Spinner } from '@chakra-ui/react';
 import Card from 'components/card/Card';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@chakra-ui/react';
+import { useDispatch, useSelector } from "react-redux";
+import { deleteAccount, resetAccountDelete } from "server/actions/userAction"; // Update the path accordingly
+import { useNavigate } from "react-router-dom";
 
 export default function DeleteAccountCard() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const dispatch = useDispatch();
+  const toast = useToast();
+  const navigate = useNavigate();
+
+  const accountDelete = useSelector((state) => state.accountDelete);
+  const { error, loading, success } = accountDelete;
 
   const handleDelete = () => {
-    // Add your delete logic here
-    console.log('Account deleted');
-    onClose();
+    dispatch(deleteAccount());
   };
+
+  useEffect(() => {
+    if (success) {
+      toast({
+        title: "Account Deleted",
+        description: "Your account has been successfully deleted.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      navigate("/auth/sign-in"); // Redirect to the sign-in page
+      dispatch(resetAccountDelete()); // Reset the state
+    }
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: error,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [success, error, navigate, toast, dispatch]);
 
   // Chakra Color Mode
   const textColorPrimary = useColorModeValue('secondaryGray.900', 'white');
@@ -42,8 +74,8 @@ export default function DeleteAccountCard() {
             <Button variant="ghost" onClick={onClose}>
               Cancel
             </Button>
-            <Button colorScheme="red" onClick={handleDelete} ml={3}>
-              Confirm Delete
+            <Button colorScheme="red" onClick={handleDelete} ml={3} isLoading={loading}>
+              {loading ? <Spinner /> : "Confirm Delete"}
             </Button>
           </ModalFooter>
         </ModalContent>

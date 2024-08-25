@@ -1,10 +1,15 @@
-// Chakra imports
-import { Box, Button, Flex, Icon, Text, Input, Textarea, useColorModeValue } from '@chakra-ui/react';
+import React, { useState, useEffect } from "react";
+import { Box, Button, Flex, Icon, Text, Input, Textarea, useColorModeValue, useToast, Spinner } from '@chakra-ui/react';
 // Custom components
 import Card from 'components/card/Card';
 // Assets
 import { MdUpload } from 'react-icons/md';
 import Dropzone from 'views/admin/profile/components/Dropzone';
+
+// Redux Imports
+import { useDispatch, useSelector } from "react-redux";
+import { updateUserProfile } from "server/actions/userAction";
+import { useNavigate } from "react-router-dom";
 
 export default function Upload(props: { used?: number; total?: number; [x: string]: any }) {
 	const { used, total, ...rest } = props;
@@ -12,6 +17,45 @@ export default function Upload(props: { used?: number; total?: number; [x: strin
 	const textColorPrimary = useColorModeValue('secondaryGray.900', 'white');
 	const brandColor = useColorModeValue('brand.500', 'white');
 	const textColorSecondary = 'gray.400';
+
+	const [username, setUsername] = useState("");
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+
+	const dispatch = useDispatch();
+	const toast = useToast();
+	const navigate = useNavigate();
+
+	const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
+	const { error, loading, success } = userUpdateProfile;
+
+	const handleSubmit = () => {
+		const user = { username, email, password };
+		dispatch(updateUserProfile(user));
+	};
+
+	useEffect(() => {
+		if (success) {
+			toast({
+				title: "Profile Updated",
+				description: "Your profile has been updated successfully.",
+				status: "success",
+				duration: 5000,
+				isClosable: true,
+			});
+			// Redirect or perform other actions if needed
+		}
+
+		if (error) {
+			toast({
+				title: "Error",
+				description: error,
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		}
+	}, [success, error, toast]);
 
 	return (
 		<Card {...rest} mb='20px' alignItems='center' p='20px' w='100%' h='auto'>
@@ -24,25 +68,7 @@ export default function Upload(props: { used?: number; total?: number; [x: strin
 				Update your profile
 			</Text>
 			<Flex direction={{ base: 'column', '2xl': 'row' }} w='100%' h='auto'>
-				<Dropzone
-					w={{ base: '100%', '2xl': '268px' }}
-					me='36px'
-					h='auto'
-					minH={{ base: '200px', '2xl': 'auto' }}
-					content={
-						<Box>
-							<Icon as={MdUpload} w='80px' h='80px' color={brandColor} />
-							<Flex justify='center' mx='auto' mb='12px'>
-								<Text fontSize='xl' fontWeight='700' color={brandColor}>
-									Change your Profile Picture
-								</Text>
-							</Flex>
-							<Text fontSize='sm' fontWeight='500' color='secondaryGray.500'>
-								PNG, JPG, and GIF files are allowed
-							</Text>
-						</Box>
-					}
-				/>
+
 				<Flex direction='column' flex='1' pe='44px'>
 					{/* Username Field */}
 					<Text color={textColorPrimary} fontWeight='bold' mb='8px' mt='20px'>
@@ -53,6 +79,8 @@ export default function Upload(props: { used?: number; total?: number; [x: strin
 						mb='20px'
 						variant='filled'
 						bg={useColorModeValue('gray.100', 'gray.700')}
+						value={username}
+						onChange={(e) => setUsername(e.target.value)}
 					/>
 
 					{/* Email Field */}
@@ -64,6 +92,8 @@ export default function Upload(props: { used?: number; total?: number; [x: strin
 						mb='20px'
 						variant='filled'
 						bg={useColorModeValue('gray.100', 'gray.700')}
+						value={email}
+						onChange={(e) => setEmail(e.target.value)}
 					/>
 
 					{/* Password Field */}
@@ -76,18 +106,12 @@ export default function Upload(props: { used?: number; total?: number; [x: strin
 						mb='20px'
 						variant='filled'
 						bg={useColorModeValue('gray.100', 'gray.700')}
+						value={password}
+						onChange={(e) => setPassword(e.target.value)}
 					/>
 
 					{/* Bio Field */}
-					<Text color={textColorPrimary} fontWeight='bold' mb='8px'>
-						Bio
-					</Text>
-					<Textarea
-						placeholder='Tell us about yourself'
-						mb='20px'
-						variant='filled'
-						bg={useColorModeValue('gray.100', 'gray.700')}
-					/>
+
 
 					{/* Update Button */}
 					<Flex w='100%' justifyContent={{ base: 'center', '2xl': 'flex-start' }}>
@@ -95,8 +119,10 @@ export default function Upload(props: { used?: number; total?: number; [x: strin
 							w='140px'
 							minW='140px'
 							mt={{ base: '20px', '2xl': 'auto' }}
-							fontWeight='500'>
-							Update
+							fontWeight='500'
+							onClick={handleSubmit}
+							isLoading={loading}>
+							{loading ? <Spinner /> : "Update"}
 						</Button>
 					</Flex>
 				</Flex>

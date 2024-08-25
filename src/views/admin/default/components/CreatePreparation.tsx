@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Box, 
   Button, 
@@ -13,7 +13,8 @@ import {
   IconButton, 
   Flex,
   Text,
-  useColorModeValue 
+  useColorModeValue,
+  useToast,
 } from '@chakra-ui/react';
 import { EditIcon } from '@chakra-ui/icons';
 
@@ -23,10 +24,22 @@ interface CreatePreparationModalProps {
 
 export default function CreatePreparationModal({ jobId }: CreatePreparationModalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
+  const [job_id, setJobId] = useState(jobId);
 
   const handleContinue = () => {
     console.log(`Creating preparation material for job with ID: ${jobId}`);
+    
     // Implement the preparation material creation logic here
+
+    toast({
+      title: "Preparation Material Creation Started",
+      description: "Please be patient. We will notify you once it is ready.",
+      status: "info",
+      duration: 5000,
+      isClosable: true,
+    });
+
     onClose();
   };
 

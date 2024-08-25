@@ -16,7 +16,8 @@ import {
   IconButton, 
   Text,
   Flex,
-  useColorModeValue 
+  useColorModeValue,
+  useToast,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 
@@ -26,17 +27,40 @@ interface ScheduleInterviewModalProps {
 
 export default function ScheduleInterviewModal({ jobId }: ScheduleInterviewModalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [interviewDateTime, setInterviewDateTime] = useState('');
+  const [job, setjob] = useState(jobId);
+
+  const [interview_datetime, setinterview_datetime] = useState('');
+  const toast = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInterviewDateTime(e.target.value);
+    setinterview_datetime(e.target.value);
   };
 
   const handleSubmit = () => {
+    if (!interview_datetime) {
+      toast({
+        title: "Error",
+        description: "Please select an interview date and time.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
     console.log({
-      interview_datetime: interviewDateTime,
-      job: jobId
+      interview_datetime: interview_datetime,
+      job: jobId,
     });
+
+    toast({
+      title: "Interview Scheduled",
+      description: `Interview scheduled for ${interview_datetime}.`,
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
+
     onClose();
   };
 
@@ -77,11 +101,11 @@ export default function ScheduleInterviewModal({ jobId }: ScheduleInterviewModal
           <ModalHeader color={textColor}>Schedule an Interview</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <FormControl mb={4}>
+            <FormControl mb={4} isInvalid={!interview_datetime}>
               <FormLabel color={textColor}>Interview Date & Time</FormLabel>
               <Input 
                 type="datetime-local" 
-                value={interviewDateTime} 
+                value={interview_datetime} 
                 onChange={handleInputChange} 
                 bg={cardColor}
               />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   Box,
   Flex,
@@ -8,7 +8,10 @@ import {
   InputGroup,
   InputLeftElement,
   Icon,
-  useColorModeValue
+  useColorModeValue,
+  Button,
+  useToast,
+  Spinner,
 } from '@chakra-ui/react';
 import {
   createColumnHelper,
@@ -25,23 +28,22 @@ import CreatePreparationModal from './CreatePreparation';
 import { SearchIcon } from '@chakra-ui/icons';
 import TableHeader from './complextable/TableHeader';
 import TableBody from './complextable/TableBody';
-import { fakeJobsData } from 'views/admin/marketplace/components/data';
-type RowObj = {
-  id: string;
-  title: string;
-  description: string;
-  mockup_interview_date: string;
-  job_url: string;
-};
+import { useDispatch, useSelector } from 'react-redux';
+import { getJobList, resetJobList } from 'server/actions/actions1'; // Update the path accordingly
 
-const columnHelper = createColumnHelper<RowObj>();
-
+const columnHelper = createColumnHelper();
 
 export default function ComplexTable() {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const [sorting, setSorting] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [visibleJobs, setVisibleJobs] = useState(10);
   const textColor = useColorModeValue('secondaryGray.900', 'white');
   const borderColor = useColorModeValue('gray.200', 'whiteAlpha.100');
+  const toast = useToast();
+  const dispatch = useDispatch();
+
+  const jobList = useSelector((state) => state.jobList);
+  const { loading, error, jobs , success} = jobList;
 
   const columns = [
     columnHelper.accessor('title', {
@@ -55,7 +57,7 @@ export default function ComplexTable() {
           Job Title
         </Text>
       ),
-      cell: (info: any) => (
+      cell: (info) => (
         <Flex align='center'>
           <Text color={textColor} fontSize='sm' fontWeight='700'>
             {info.getValue()}
@@ -63,18 +65,18 @@ export default function ComplexTable() {
         </Flex>
       ),
     }),
-    columnHelper.accessor('mockup_interview_date', {
-      id: 'mockup_interview_date',
+    columnHelper.accessor('actual_interview_date', {
+      id: 'actual_interview_date',
       header: () => (
         <Text
           justifyContent='space-between'
           align='center'
           fontSize={{ sm: '10px', lg: '12px' }}
           color='gray.400'>
-          Mockup Interview Date
+          Actual Interview Date
         </Text>
       ),
-      cell: (info: any) => (
+      cell: (info) => (
         <Text color={textColor} fontSize='sm' fontWeight='700'>
           {info.getValue()}
         </Text>
@@ -91,7 +93,7 @@ export default function ComplexTable() {
           Job URL
         </Text>
       ),
-      cell: (info: any) => (
+      cell: (info) => (
         <Text color={textColor} fontSize='sm' textDecoration="underline">
           <a href={info.getValue()} target="_blank" rel="noopener noreferrer">
             {info.getValue()}
@@ -110,7 +112,7 @@ export default function ComplexTable() {
           Schedule Interview
         </Text>
       ),
-      cell: (info: any) => (
+      cell: (info) => (
         <Flex justifyContent="center" alignItems="center">
           <ScheduleInterviewModal jobId={info.row.original.id} />
         </Flex>
@@ -127,7 +129,7 @@ export default function ComplexTable() {
           Remove
         </Text>
       ),
-      cell: (info: any) => (
+      cell: (info) => (
         <Flex justifyContent="center" alignItems="center">
           <DeleteJobModal jobId={info.row.original.id} />
         </Flex>
@@ -144,7 +146,7 @@ export default function ComplexTable() {
           Prep Material
         </Text>
       ),
-      cell: (info: any) => (
+      cell: (info) => (
         <Flex justifyContent="center" alignItems="center">
           <CreatePreparationModal jobId={info.row.original.id} />
         </Flex>
@@ -152,15 +154,43 @@ export default function ComplexTable() {
     },
   ];
 
-  const [data, setData] = React.useState(() => [...fakeJobsData]);
+  useEffect(() => {
+    dispatch(getJobList());
 
-  const filteredData = React.useMemo(() => {
-    return data.filter(job =>
+    return () => {
+      dispatch(resetJobList());
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: "Error",
+        description: error,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+
+    if (success && jobs.length === 0) {
+      toast({
+        title: "No Jobs",
+        description: "You don't have any jobs on my platform yet.",
+        status: "info",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [error, loading, jobs, toast]);
+
+  const filteredData = useMemo(() => {
+    return jobs.filter(job =>
       job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      job.mockup_interview_date.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      job.actual_interview_date.toLowerCase().includes(searchQuery.toLowerCase()) ||
       job.job_url.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [data, searchQuery]);
+    ).slice(0, visibleJobs);
+  }, [jobs, searchQuery, visibleJobs]);
 
   const table = useReactTable({
     data: filteredData,
@@ -173,6 +203,10 @@ export default function ComplexTable() {
     getSortedRowModel: getSortedRowModel(),
     debugTable: true,
   });
+
+  const handleLoadMore = () => {
+    setVisibleJobs(prev => prev + 10);
+  };
 
   return (
     <Card flexDirection='column' w='100%' px='0px' overflowX={{ sm: 'scroll', lg: 'hidden' }}>
@@ -198,11 +232,22 @@ export default function ComplexTable() {
         overflowX="auto"
         maxH="400px" // Adjust the height as needed
       >
-        <Table variant='simple' color='gray.500' mb='24px' mt="12px">
-          <TableHeader headerGroups={table.getHeaderGroups()} borderColor={borderColor} />
-          <TableBody rows={table.getRowModel().rows} />
-        </Table>
+        {loading ? (
+          <Flex justifyContent="center" alignItems="center" h="100%">
+            <Spinner />
+          </Flex>
+        ) : (
+          <Table variant='simple' color='gray.500' mb='24px' mt="12px">
+            <TableHeader headerGroups={table.getHeaderGroups()} borderColor={borderColor} />
+            <TableBody rows={table.getRowModel().rows} />
+          </Table>
+        )}
       </Box>
+      {jobs.length > visibleJobs && (
+        <Flex justifyContent="center" mt="4">
+          <Button onClick={handleLoadMore}>Load More</Button>
+        </Flex>
+      )}
     </Card>
   );
 }

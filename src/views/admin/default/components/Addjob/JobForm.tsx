@@ -1,6 +1,3 @@
-// main addjob.tsx
-
-
 import React from 'react';
 import {
   FormControl,
@@ -19,7 +16,6 @@ interface JobFormProps {
     company: string;
     location: string;
     actual_interview_date: string;
-    mockup_interview_date: string;
     job_url: string;
   };
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
@@ -84,17 +80,6 @@ const JobForm: React.FC<JobFormProps> = ({ formValues, handleInputChange, handle
           type="date"
           name="actual_interview_date"
           value={formValues.actual_interview_date}
-          onChange={handleInputChange}
-          bg={cardColor}
-        />
-      </FormControl>
-
-      <FormControl mb={4}>
-        <FormLabel color={textColor}>Mockup Interview Date</FormLabel>
-        <Input
-          type="date"
-          name="mockup_interview_date"
-          value={formValues.mockup_interview_date}
           onChange={handleInputChange}
           bg={cardColor}
         />

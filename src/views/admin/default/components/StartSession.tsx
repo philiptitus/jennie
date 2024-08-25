@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Box, 
   Button, 
@@ -13,7 +13,8 @@ import {
   IconButton, 
   Flex,
   Text,
-  useColorModeValue 
+  useColorModeValue,
+  useToast,
 } from '@chakra-ui/react';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
 
@@ -23,10 +24,21 @@ interface StartSessionModalProps {
 
 export default function StartSessionModal({ interviewId }: StartSessionModalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [job_id, setJobId] = useState(interviewId);
+  const toast = useToast();
 
   const handleContinue = () => {
     console.log(`Starting interview session for ID: ${interviewId}`);
     // Implement the logic to start the interview session here
+
+    toast({
+      title: "Starting Interview Session",
+      description: `I am making the interview session for interview ID ${interviewId}. Please be patient; you will get a notification when it's ready.`,
+      status: "info",
+      duration: 5000,
+      isClosable: true,
+    });
+
     onClose();
   };
 

@@ -21,14 +21,29 @@ import tableDataCheck from 'views/admin/default/variables/tableDataCheck';
 import tableDataComplex from 'views/admin/default/variables/tableDataComplex';
 import InterviewTable from './components/InterviewTable';
 import AddJobModal from './components/Addjob';
+import Test from './components/Test';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 export default function UserReports() {
+	const navigate = useNavigate();
+
+	const userLogin = useSelector((state) => state.userLogin);
+	const { error, loading, userInfo, success } = userLogin;
 	// Chakra Color Mode
 	const brandColor = useColorModeValue('brand.500', 'white');
 	const boxBg = useColorModeValue('secondaryGray.300', 'whiteAlpha.100');
+	
+	useEffect(() => {
+		if (!userInfo) {
+		  navigate('/auth/sign-in');
+		}
+	  }, [userInfo, navigate]);
 	return (
 		<Box pt={{ base: '130px', md: '80px', xl: '80px' }}>
 			<SimpleGrid columns={{ base: 1, md: 2, lg: 3, '2xl': 6 }} gap='20px' mb='20px'>
+				{/* <Test/> */}
 				<MiniStatistics
 					startContent={
 						<IconBox

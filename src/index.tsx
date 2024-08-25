@@ -2,6 +2,9 @@ import './assets/css/App.css';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import React, { useEffect } from 'react';
+import store from 'server/store';
+import { Provider } from 'react-redux';
+
 
 import App from './App';
 
@@ -26,9 +29,12 @@ const Root = () => {
   }, []);
 
   return (
+    <Provider store={store}>
     <BrowserRouter>
       <App />
     </BrowserRouter>
+    </Provider>
+
   );
 };
 

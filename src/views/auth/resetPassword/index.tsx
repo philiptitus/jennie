@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -40,6 +40,7 @@ function ResetPassword() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<Errors>({});
   const toast = useToast();
+  const navigate = useNavigate();
 
   const handlePasswordClick = () => setShowPassword(!showPassword);
   const handleConfirmPasswordClick = () =>
@@ -63,7 +64,7 @@ function ResetPassword() {
     } else {
       // If no errors, proceed with password reset logic
       toast({
-        title: "Password reset successful.",
+        title: "Password changed successfully.",
         description: "You can now sign in with your new password.",
         status: "success",
         duration: 5000,
@@ -73,6 +74,8 @@ function ResetPassword() {
       setPassword("");
       setConfirmPassword("");
       setErrors({});
+      // Navigate to login page
+      navigate("/auth/sign-in");
     }
   };
 

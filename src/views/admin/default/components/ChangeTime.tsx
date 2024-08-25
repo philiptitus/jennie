@@ -15,7 +15,8 @@ import {
   useDisclosure, 
   IconButton, 
   Flex,
-  useColorModeValue 
+  useColorModeValue,
+  useToast,
 } from '@chakra-ui/react';
 import { CalendarIcon } from '@chakra-ui/icons';
 
@@ -25,19 +26,41 @@ interface ChangeInterviewDateTimeModalProps {
 
 export default function ChangeTime({ interviewId }: ChangeInterviewDateTimeModalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [newDateTime, setNewDateTime] = useState('');
+  const [interview_datetime, setInterviewDateTime] = useState('');
+  const [interview_id, setInterviewId] = useState(interviewId);
+
+  const toast = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewDateTime(e.target.value);
+    setInterviewDateTime(e.target.value);
   };
 
   const handleSubmit = () => {
-    console.log({
-      interview_id: interviewId,
-      new_interview_datetime: newDateTime,
-    });
-    // Implement the API call or logic to update the interview datetime
-    onClose();
+    if (interview_datetime) {
+      console.log({
+        interview_id: interviewId,
+        new_interview_datetime: interview_datetime,
+      });
+      // Implement the API call or logic to update the interview datetime
+      
+      toast({
+        title: "Interview Date & Time Updated",
+        description: `The new interview date and time is: ${interview_datetime}`,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+
+      onClose();
+    } else {
+      toast({
+        title: "Error",
+        description: "Please select a new interview date and time.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   // Chakra Color Mode
@@ -80,7 +103,7 @@ export default function ChangeTime({ interviewId }: ChangeInterviewDateTimeModal
               <FormLabel color={textColor}>New Interview Date & Time</FormLabel>
               <Input 
                 type="datetime-local" 
-                value={newDateTime} 
+                value={interview_datetime} 
                 onChange={handleInputChange} 
                 bg={cardColor}
               />

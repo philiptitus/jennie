@@ -1,5 +1,5 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 // Chakra imports
 import {
   Box,
@@ -11,6 +11,8 @@ import {
   Input,
   Text,
   useColorModeValue,
+  useToast,
+  Spinner,
 } from "@chakra-ui/react";
 // Custom components
 import { HSeparator } from "components/separator/Separator";
@@ -18,12 +20,55 @@ import DefaultAuth from "layouts/auth/Default";
 // Assets
 import illustration from "assets/img/auth/auth.png";
 
+// Redux Imports
+import { useDispatch, useSelector } from "react-redux";
+import { forgot_password } from "server/actions/userAction";
+
 function ForgotPassword() {
   // Chakra color mode
   const textColor = useColorModeValue("orange.700", "white");
   const textColorSecondary = "gray.400";
   const textColorBrand = useColorModeValue("brand.500", "white");
   const brandStars = useColorModeValue("brand.500", "brand.400");
+
+  // State to manage email input
+  const [email, setEmail] = useState("");
+
+  // Chakra toast
+  const toast = useToast();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const forgotPasswordState = useSelector((state) => state.forgotPassword);
+  const { error, loading, success } = forgotPasswordState;
+
+  // Handle form submission
+  const handleSubmit = () => {
+    dispatch(forgot_password(email));
+  };
+
+  useEffect(() => {
+    if (success) {
+      toast({
+        title: "Password Reset Email Sent",
+        description: "A link to reset your password has been sent to your email.",
+        status: "info",
+        duration: 5000,
+        isClosable: true,
+      });
+      navigate("/auth/sign-in"); // Redirect to the sign-in page
+    }
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: error,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [success, error, navigate, toast]);
 
   return (
     <DefaultAuth illustrationBackground={illustration} image={illustration}>
@@ -82,6 +127,8 @@ function ForgotPassword() {
               mb='24px'
               fontWeight='500'
               size='lg'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <Button
               fontSize='sm'
@@ -89,8 +136,10 @@ function ForgotPassword() {
               fontWeight='500'
               w='100%'
               h='50'
-              mb='24px'>
-              Reset Password
+              mb='24px'
+              onClick={handleSubmit}
+              isLoading={loading}>
+              {loading ? <Spinner /> : "Reset Password"}
             </Button>
           </FormControl>
           <Flex
