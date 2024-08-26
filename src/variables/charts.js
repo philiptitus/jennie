@@ -307,7 +307,7 @@ export const barChartOptionsConsumption: any = {
 };
 
 export const pieChartOptions: any = {
-	labels: ['Passed', 'Fail', 'Marking'],
+	labels: ['Passed', 'Fail', 'Null'],
 	colors: ['#00FF00', '#FF0000', '#FFA500'], // Green for 'Passed', Red for 'Fail', Orange for 'Marking'
 	
 	chart: {

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Grid } from '@chakra-ui/react';
 
@@ -13,17 +13,38 @@ import DeleteAccountCard from './components/Delete';
 
 // Assets
 import banner from 'assets/img/auth/banner.png';
-import avatar from 'assets/img/avatars/avatar4.png';
 import { useSelector } from 'react-redux';
 
 export default function Overview() {
   const navigate = useNavigate();
   const userLogin = useSelector((state) => state.userLogin);
   const { error, loading, userInfo, success } = userLogin;
+  const userDetails = useSelector((state) => state.userDetails);
+  const { loading: userDetailsLoading, error: userDetailsError, user } = userDetails;
+
+  const [avatar, setAvatar] = useState('');
+
+  // Function to randomly select an SVG
+  const importAll = (r: __WebpackModuleApi.RequireContext) => {
+    const svgModules = r.keys().map(r);
+    console.log(`Number of SVGs found: ${svgModules.length}`);
+    return svgModules.map((mod) => mod.default || mod);
+  };
+
+  const randomSVG = () => {
+    const svgs = importAll(require.context('assets/svgs/', false, /\.svg$/));
+    const randomIndex = Math.floor(Math.random() * svgs.length);
+    const selectedSVG = svgs[randomIndex];
+    console.log('Selected SVG:', selectedSVG);
+    return selectedSVG;
+  };
 
   useEffect(() => {
     if (!userInfo) {
       navigate('/auth/sign-in');
+    } else {
+      const svg = randomSVG();
+      setAvatar(svg); // Set the correct SVG path as the avatar
     }
   }, [userInfo, navigate]);
 
@@ -34,7 +55,7 @@ export default function Overview() {
         gridArea="1 / 1 / 2 / 2"
         banner={banner}
         avatar={avatar}
-        name={userInfo?.username}
+        name={userInfo?.name}
         job="Developer"
         posts="0"
         followers="0"
@@ -46,8 +67,8 @@ export default function Overview() {
       <br />
       <Storage
         gridArea={{ base: '2 / 1 / 3 / 2', lg: '1 / 2 / 2 / 3' }}
-        used={25.6}
-        total={50}
+        used={1000 - user?.credits}
+        total={1000}
       />
       <br />
 

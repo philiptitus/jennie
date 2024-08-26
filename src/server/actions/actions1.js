@@ -723,10 +723,10 @@ export const resetPreparationMaterialDetail = () => (dispatch) => {
 };
 
 // Action for creating preparation material
-export const createPreparationMaterial = (materialData) => async (dispatch, getState) => {
+export const createPreparationMaterial = (jobId) => async (dispatch, getState) => {
   try {
     dispatch({
-      type: PREPARATION_MATERIAL_CREATE_REQUEST
+      type: PREPARATION_MATERIAL_CREATE_REQUEST,
     });
 
     const {
@@ -736,13 +736,18 @@ export const createPreparationMaterial = (materialData) => async (dispatch, getS
     const config = {
       headers: {
         'Content-type': 'application/json',
-        Authorization: `Bearer ${userInfo.token}`
-      }
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    // Create the data object with job_id
+    const dataToSend = {
+      job_id: jobId,
     };
 
     const { data } = await axios.post(
       `${API_URL}/api/v1/material/create/`,
-      materialData,
+      dataToSend,
       config
     );
 
@@ -759,6 +764,7 @@ export const createPreparationMaterial = (materialData) => async (dispatch, getS
     });
   }
 };
+
 
 export const resetPreparationMaterialCreate = () => (dispatch) => {
   dispatch({

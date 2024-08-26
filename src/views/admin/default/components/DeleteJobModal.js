@@ -1,22 +1,24 @@
-import React from 'react';
-import { 
-  Box, 
-  Button, 
-  Modal, 
-  ModalOverlay, 
-  ModalContent, 
-  ModalHeader, 
-  ModalFooter, 
-  ModalBody, 
-  ModalCloseButton, 
-  useDisclosure, 
-  IconButton, 
+import React, { useEffect } from 'react';
+import {
+  Box,
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  IconButton,
   Flex,
   Text,
   useColorModeValue,
   useToast,
 } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteJob, resetJobDelete } from 'server/actions/actions1'; // Update the path accordingly
 
 interface DeleteJobModalProps {
   jobId: string; // or number, depending on your job ID type
@@ -25,22 +27,41 @@ interface DeleteJobModalProps {
 export default function DeleteJobModal({ jobId }: DeleteJobModalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
+  const dispatch = useDispatch();
+
+  const jobDelete = useSelector((state) => state.jobDelete);
+  const { loading, error, success } = jobDelete;
 
   const handleDelete = () => {
-    console.log(`Deleting job with ID: ${jobId}`);
-    
-    // Implement the job deletion logic here
-    
-    toast({
-      title: "Job Deleted",
-      description: `The job with ID ${jobId} was successfully deleted.`,
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
-
-    onClose();
+    dispatch(deleteJob(jobId));
   };
+
+  useEffect(() => {
+    if (success) {
+      toast({
+        title: "Job Deleted",
+        description: `The job with ID ${jobId} was successfully deleted.`,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+
+      onClose();
+      dispatch(resetJobDelete());
+    }
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: error,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+
+      dispatch(resetJobDelete());
+    }
+  }, [success, error, toast, onClose, dispatch, jobId]);
 
   // Chakra Color Mode
   const textColor = useColorModeValue('secondaryGray.900', 'white');
@@ -50,11 +71,11 @@ export default function DeleteJobModal({ jobId }: DeleteJobModalProps) {
 
   return (
     <>
-      <Box 
-        p="20px" 
-        borderRadius="lg" 
-        overflow="hidden" 
-        boxShadow={cardShadow} 
+      <Box
+        p="20px"
+        borderRadius="lg"
+        overflow="hidden"
+        boxShadow={cardShadow}
         bg={cardColor}
         maxW="sm"
         mb={6}
@@ -62,11 +83,11 @@ export default function DeleteJobModal({ jobId }: DeleteJobModalProps) {
         flexDirection="column"
       >
         <Flex justify="center">
-          <IconButton 
-            icon={<DeleteIcon />} 
-            onClick={onOpen} 
-            colorScheme={buttonColorScheme} 
-            aria-label="Delete Job" 
+          <IconButton
+            icon={<DeleteIcon />}
+            onClick={onOpen}
+            colorScheme={buttonColorScheme}
+            aria-label="Delete Job"
             size="sm"
           />
         </Flex>
@@ -82,7 +103,7 @@ export default function DeleteJobModal({ jobId }: DeleteJobModalProps) {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme={buttonColorScheme} mr={3} onClick={handleDelete}>
+            <Button colorScheme={buttonColorScheme} mr={3} onClick={handleDelete} isLoading={loading}>
               Delete
             </Button>
             <Button variant="ghost" onClick={onClose}>Cancel</Button>

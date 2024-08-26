@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import 'assets/css/MiniCalendar.css';
@@ -16,25 +16,52 @@ import {
   ModalCloseButton,
   List,
   ListItem,
+  Spinner,
+  useToast,
 } from '@chakra-ui/react';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import Card from 'components/card/Card';
-import { fakeInterviewsData } from 'views/admin/marketplace/components/data'; // Importing the new data
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserInterviewList, resetUserInterviewList } from 'server/actions/actions1'; // Update the path accordingly
 
-type CalendarValue = Date | [Date, Date] | null;
-
-export default function MiniCalendar(props: { selectRange: boolean; [x: string]: any; }) {
+export default function MiniCalendar(props) {
   const { selectRange, ...rest } = props;
-  const [value, setValue] = useState<CalendarValue>(new Date());
+  const [value, setValue] = useState(new Date());
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedEvents, setSelectedEvents] = useState<{ date: string; events: { job_name: string; interview_datetime: string }[] } | null>(null);
+  const [selectedEvents, setSelectedEvents] = useState(null);
 
-  const handleChange = (value: CalendarValue) => {
+  const dispatch = useDispatch();
+  const userInterviewList = useSelector((state) => state.userInterviewList);
+  const { loading, error, interviews } = userInterviewList;
+
+  const toast = useToast();
+
+  useEffect(() => {
+    dispatch(getUserInterviewList());
+
+    return () => {
+      dispatch(resetUserInterviewList());
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: "Error loading interviews.",
+        description: "There was an error while loading the interview list. Please try again later.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [error, toast]);
+
+  const handleChange = (value) => {
     setValue(value);
 
     const formattedDate = value instanceof Date ? value.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
-    
-    const dayEvents = fakeInterviewsData.filter(event => {
+
+    const dayEvents = interviews.filter(event => {
       const eventDate = new Date(event.interview_datetime).toLocaleDateString('en-GB', {
         day: 'numeric',
         month: 'long',
@@ -49,14 +76,14 @@ export default function MiniCalendar(props: { selectRange: boolean; [x: string]:
     }
   };
 
-  const tileClassName = ({ date, view }: { date: Date; view: string }) => {
+  const tileClassName = ({ date, view }) => {
     if (view === 'month') {
       const formattedDate = date.toLocaleDateString('en-GB', {
         day: 'numeric',
         month: 'long',
         year: 'numeric',
       });
-      if (fakeInterviewsData.some(event => {
+      if (interviews.some(event => {
         const eventDate = new Date(event.interview_datetime).toLocaleDateString('en-GB', {
           day: 'numeric',
           month: 'long',
@@ -83,15 +110,20 @@ export default function MiniCalendar(props: { selectRange: boolean; [x: string]:
       <Heading as="h3" size="lg" mb="20px">
         My Calendar
       </Heading>
-      <Calendar
-        onChange={handleChange}
-        value={value}
-        selectRange={selectRange}
-        view={'month'}
-        tileClassName={tileClassName}
-        prevLabel={<Icon as={MdChevronLeft} w="24px" h="24px" mt="4px" />}
-        nextLabel={<Icon as={MdChevronRight} w="24px" h="24px" mt="4px" />}
-      />
+      
+      {loading ? (
+        <Spinner size="xl" />
+      ) : (
+        <Calendar
+          onChange={handleChange}
+          value={value}
+          selectRange={selectRange}
+          view={'month'}
+          tileClassName={tileClassName}
+          prevLabel={<Icon as={MdChevronLeft} w="24px" h="24px" mt="4px" />}
+          nextLabel={<Icon as={MdChevronRight} w="24px" h="24px" mt="4px" />}
+        />
+      )}
 
       {selectedEvents && (
         <Modal isOpen={isOpen} onClose={onClose}>

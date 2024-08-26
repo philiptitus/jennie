@@ -214,7 +214,7 @@ export const jobUpdateReducer = (state = { job: null }, action) => {
       case PREPARATION_MATERIAL_LIST_REQUEST:
         return { loading: true, ...state };
       case PREPARATION_MATERIAL_LIST_SUCCESS:
-        return { loading: false, materials: action.payload, success: true };
+        return { loading: false, materials: action.payload.results, success: true };
       case PREPARATION_MATERIAL_LIST_FAIL:
         return { loading: false, error: action.payload };
       case PREPARATION_MATERIAL_LIST_RESET:
