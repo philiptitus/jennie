@@ -34,15 +34,15 @@ export default function Settings() {
   const renderActiveComponent = () => {
     switch (activeComponent) {
       case 'DevelopmentTable':
-        return <DevelopmentTable />;
+        return <DevelopmentTable materialId={id} />;
       case 'CodingTable':
-        return <CodingTable />;
+        return <CodingTable materialId={id} />;
       case 'CheckTable':
-        return <CheckTable />;
+        return <CheckTable materialId={id} />;
       case 'YouTubeTable':
-        return <YouTubeTable />;
+        return <YouTubeTable materialId={id}  />;
       default:
-        return <DevelopmentTable />;
+        return <DevelopmentTable materialId={id} />;
     }
   };
 
