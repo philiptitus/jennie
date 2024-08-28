@@ -183,6 +183,9 @@ export default function ComplexTable({ materialId }) {
                 setSubmitted={setSubmitted}
                 viewedAnswer={viewedAnswer}
                 setViewedAnswer={setViewedAnswer}
+                id={materialId} // Pass the block.id as the id parameter
+                attempted={row.original.attempted}
+                placeholder={row.original.my_answer}
               />
             ))}
           </Tbody>

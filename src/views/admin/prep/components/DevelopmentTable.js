@@ -21,6 +21,7 @@ export default function ComplexTable({ materialId }) {
   const preparationMaterialDetail = useSelector((state) => state.preparationMaterialDetail);
   const { loading, error, material } = preparationMaterialDetail;
 
+
   useEffect(() => {
     dispatch(getPreparationMaterialDetail(materialId));
 
@@ -161,6 +162,10 @@ export default function ComplexTable({ materialId }) {
                 setSubmitted={setSubmitted}
                 viewedAnswer={viewedAnswer}
                 setViewedAnswer={setViewedAnswer}
+                id={row.original.id} // Pass the block.id as the id parameter
+                attempted={row.original.attempted}
+                placeholder={row.original.my_answer}
+
               />
             ))}
           </Tbody>

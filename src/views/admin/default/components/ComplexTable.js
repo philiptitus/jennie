@@ -25,7 +25,7 @@ import Menu from 'components/menu/MainMenu';
 import ScheduleInterviewModal from 'views/admin/default/components/InterviewModal';
 import DeleteJobModal from './DeleteJobModal';
 import CreatePreparationModal from './CreatePreparation';
-import { SearchIcon } from '@chakra-ui/icons';
+import { SearchIcon, ExternalLinkIcon } from '@chakra-ui/icons';
 import TableHeader from './complextable/TableHeader';
 import TableBody from './complextable/TableBody';
 import { useDispatch, useSelector } from 'react-redux';
@@ -43,7 +43,7 @@ export default function ComplexTable() {
   const dispatch = useDispatch();
 
   const jobList = useSelector((state) => state.jobList);
-  const { loading, error, jobs , success} = jobList;
+  const { loading, error, jobs, success } = jobList;
 
   const columns = [
     columnHelper.accessor('title', {
@@ -94,11 +94,14 @@ export default function ComplexTable() {
         </Text>
       ),
       cell: (info) => (
-        <Text color={textColor} fontSize='sm' textDecoration="underline">
-          <a href={info.getValue()} target="_blank" rel="noopener noreferrer">
-            {info.getValue()}
-          </a>
-        </Text>
+        <Flex justifyContent="center" alignItems="center">
+          <Icon
+            as={ExternalLinkIcon}
+            color={textColor}
+            cursor="pointer"
+            onClick={() => window.open(info.getValue(), '_blank', 'noopener,noreferrer')}
+          />
+        </Flex>
       ),
     }),
     {
