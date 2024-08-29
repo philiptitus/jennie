@@ -5,6 +5,7 @@ import ComplexTableHeader from './DevelopmentTable/ComplexTableHeader';
 import ComplexTableRow from './DevelopmentTable/ComplexTableRow';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPreparationMaterialDetail, resetPreparationMaterialDetail } from 'server/actions/actions1'; // Update the path accordingly
+import CodingTableRow from './CodingTable/CodingTableRow';
 
 const columnHelper = createColumnHelper();
 
@@ -172,7 +173,7 @@ export default function ComplexTable({ materialId }) {
           </Thead>
           <Tbody>
             {table.getRowModel().rows.slice(0, 11).map((row) => (
-              <ComplexTableRow
+              <CodingTableRow
                 key={row.id}
                 row={row}
                 showAnswer={showAnswer}

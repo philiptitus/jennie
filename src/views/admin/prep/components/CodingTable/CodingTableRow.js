@@ -8,15 +8,15 @@ import { updateCodingQuestion, resetCodingQuestionUpdate } from 'server/actions/
 
 const CodingTableRow = ({
   row,
-  showAnswer,
+  showAnswer = {},
   setShowAnswer,
-  answers,
+  answers = {},
   setAnswers,
-  languages,
+  languages = {},
   setLanguages,
-  submitted,
+  submitted = {},
   setSubmitted,
-  viewedAnswer,
+  viewedAnswer = {},
   setViewedAnswer,
   id,
   attempted,
@@ -35,7 +35,7 @@ const CodingTableRow = ({
       if (!toast.isActive(toastIdRef.current)) {
         toastIdRef.current = toast({
           title: 'Success',
-          description: 'The coding question has been successfully updated.',
+          description: 'Answer Updated.',
           status: 'success',
           duration: 3000,
           isClosable: true,
@@ -131,7 +131,7 @@ const CodingTableRow = ({
     if (!toast.isActive(toastIdRef.current)) {
       toastIdRef.current = toast({
         title: 'Success',
-        description: `The answer for question ${id} has been successfully saved.`,
+        description: `Saved.`,
         status: 'success',
         duration: 3000,
         isClosable: true,
@@ -158,15 +158,7 @@ const CodingTableRow = ({
             <Text fontSize='lg' fontWeight='bold' mb='4'>
               {row.original.question}
             </Text>
-            <Select
-              placeholder='Select Language'
-              value={languages[row.original.id] || row.original.language}
-              onChange={(e) => handleLanguageChange(row.original.id, e.target.value)}
-              mb='4'>
-              <option value='Python'>Python</option>
-              <option value='JavaScript'>JavaScript</option>
-              <option value='Java'>Java</option>
-            </Select>
+
             <Textarea
               placeholder={attempted ? placeholder : 'Your answer'}
               value={answers[row.original.id] || ''}
@@ -175,7 +167,6 @@ const CodingTableRow = ({
               resize='vertical'
               minH='100px'
             />
-            <CodeEditorModal />
             {!attempted && (
               <Button
                 colorScheme='teal'
@@ -209,6 +200,8 @@ const CodingTableRow = ({
             </Text>
             <Text mt='4'>Attempted: {row.original.attempted ? 'Yes' : 'No'}</Text>
             <Text mt='2'>Score: {row.original.score}%</Text>
+
+            <CodeEditorModal/>
           </Box>
         </Td>
       </Tr>

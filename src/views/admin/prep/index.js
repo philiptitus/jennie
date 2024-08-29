@@ -1,34 +1,52 @@
-import { Box, SimpleGrid, Button, Icon, useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Menu, MenuButton, MenuList, MenuItem, useToast } from '@chakra-ui/react';
+import { Box, SimpleGrid, Button, Icon, useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Menu, MenuButton, MenuList, MenuItem, useToast, Spinner } from '@chakra-ui/react';
 import { FaCheckCircle, FaBars } from 'react-icons/fa';  // Icon import
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';  // Import useParams
+import { useDispatch, useSelector } from 'react-redux';
 import DevelopmentTable from 'views/admin/prep/components/DevelopmentTable';
 import CheckTable from 'views/admin/prep/components/CheckTable';
 import YouTubeTable from './components/YouTubeTable';
 import CodingTable from './components/CodingTable';
+import { markPreparationMaterial, resetPreparationMaterialMarking } from 'server/actions/actions1';
 
 export default function Settings() {
-  const { id = '1' } = useParams<{ id?: string }>();  // Fetch id from URL parameters, default to '1' if not provided
+  const { id = '1' } = useParams();  // Fetch id from URL parameters, default to '1' if not provided
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef(null);
   const toast = useToast();  // Hook for toast notifications
+  const dispatch = useDispatch();
+
+  const preparationMaterialMarking = useSelector((state) => state.preparationMaterialMarking);
+  const { loading, error, success } = preparationMaterialMarking;
 
   const [activeComponent, setActiveComponent] = useState('DevelopmentTable');
 
+  useEffect(() => {
+    if (success) {
+      toast({
+        title: "Submission Successful",
+        description: "Your submission was a success. If you don't get your results within 10 minutes, please come back and submit again.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+      dispatch(resetPreparationMaterialMarking());
+      onClose(); // Close the dialog after submission
+    }
+    if (error) {
+      toast({
+        title: "Submission Failed",
+        description: error,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+      dispatch(resetPreparationMaterialMarking());
+    }
+  }, [success, error, dispatch, toast, onClose]);
+
   const handleSubmit = () => {
-    // Add your submit logic here, using the id
-    console.log("Marked as Submitted with ID:", id);
-
-    // Show toast message
-    toast({
-      title: "Submission Successful",
-      description: "Your submission was a success. If you don't get your results within 10 minutes, please come back and submit again.",
-      status: "success",
-      duration: 9000,
-      isClosable: true,
-    });
-
-    onClose(); // Close the dialog after submission
+    dispatch(markPreparationMaterial(id));
   };
 
   const renderActiveComponent = () => {
@@ -53,6 +71,8 @@ export default function Settings() {
         colorScheme="orange"  // Adjust to your brand color
         mb="20px"  // Margin below the button
         onClick={onOpen}
+        isLoading={loading}
+        spinner={<Spinner size="sm" />}
       >
         Submit for Marking
       </Button>

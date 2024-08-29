@@ -24,7 +24,7 @@ const ComplexTableRow = ({
   const toast = useToast();
   const dispatch = useDispatch();
 
-  const { loading, error, success } = useSelector((state) => state.codingQuestionUpdate);
+  const { loading, error, success } = useSelector((state) => state.preparationBlockUpdate);
 
   const toastIdRef = useRef(null);
 
@@ -33,7 +33,7 @@ const ComplexTableRow = ({
       if (!toast.isActive(toastIdRef.current)) {
         toastIdRef.current = toast({
           title: 'Success',
-          description: 'The question has been successfully updated.',
+          description: 'Answer Updated.',
           status: 'success',
           duration: 3000,
           isClosable: true,
@@ -59,7 +59,7 @@ const ComplexTableRow = ({
   const toggleAnswerVisibility = useCallback((id) => {
     if (!submitted[id]) {
       setAnswers((prev) => ({ ...prev, [id]: 'I don\'t know' }));
-      dispatch(updateCodingQuestion(id, { my_answer: 'I don\'t know' }));
+      dispatch(updatePreparationBlock(id, { my_answer: 'I don\'t know' }));
     }
     setShowAnswer((prev) => ({ ...prev, [id]: !prev[id] }));
     setViewedAnswer((prev) => ({ ...prev, [id]: true }));
@@ -118,14 +118,14 @@ const ComplexTableRow = ({
     }
 
     // Dispatch the update action
-    dispatch(updateCodingQuestion(id, { my_answer: answers[id] }));
+    dispatch(updatePreparationBlock(id, { my_answer: answers[id] }));
     console.log(id)
     setSubmitted((prev) => ({ ...prev, [id]: true }));
 
     if (!toast.isActive(toastIdRef.current)) {
       toastIdRef.current = toast({
         title: 'Success',
-        description: `The answer for question ${id} has been successfully saved.`,
+        description: `Saved.`,
         status: 'success',
         duration: 3000,
         isClosable: true,
@@ -191,7 +191,6 @@ const ComplexTableRow = ({
             </Text>
             <Text mt='4'>Attempted: {row.original.attempted ? 'Yes' : 'No'}</Text>
             <Text mt='2'>Score: {row.original.score}%</Text>
-            <CodeEditorModal/>
           </Box>
         </Td>
       </Tr>

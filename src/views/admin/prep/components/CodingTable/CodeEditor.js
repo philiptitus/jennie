@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -16,14 +16,16 @@ import {
   useColorModeValue,
   Select,
   Textarea,
+  Spinner,
+  useToast,
 } from '@chakra-ui/react';
 import { ChevronRightIcon } from '@chakra-ui/icons';
+import languages from './languages'; // Import the languages list
+import { useDispatch, useSelector } from 'react-redux';
+import { runCode, resetRunCode } from 'server/actions/actions2'; // Import the actions
+import { getCode, resetGetCode } from 'server/actions/actions2'; // Import the actions
 
-interface CodeEditorModalProps {
-  // You can add any additional props here if needed
-}
-
-export default function CodeEditorModal({}: CodeEditorModalProps) {
+export default function CodeEditorModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [code, setCode] = useState('');
   const [language, setLanguage] = useState('JavaScript');
@@ -34,9 +36,62 @@ export default function CodeEditorModal({}: CodeEditorModalProps) {
   const cardShadow = useColorModeValue('0px 18px 40px rgba(112, 144, 176, 0.12)', 'unset');
   const buttonColorScheme = useColorModeValue('blue', 'orange');
 
+  const dispatch = useDispatch();
+  const toast = useToast();
+
+  const { loading: runCodeLoading, error: runCodeError, code: runCodeOutput } = useSelector((state) => state.runCode);
+  const { loading: getCodeLoading, error: getCodeError, code: getCodeOutput } = useSelector((state) => state.getCode);
+
+  useEffect(() => {
+    if (runCodeOutput) {
+      setOutput(''); // Clear the output before showing the spinner
+      setTimeout(() => {
+        dispatch(getCode());
+      }, 2000); // Wait for 2 seconds before fetching the result
+      dispatch(resetRunCode());
+    }
+  }, [runCodeOutput, dispatch]);
+
+  useEffect(() => {
+    if (getCodeOutput) {
+      setOutput(typeof getCodeOutput === 'string' ? getCodeOutput : JSON.stringify(getCodeOutput, null, 2));
+      dispatch(resetGetCode());
+    }
+  }, [getCodeOutput, dispatch]);
+
+  useEffect(() => {
+    if (runCodeError) {
+      toast({
+        title: 'Error',
+        description: typeof runCodeError === 'string' ? runCodeError : JSON.stringify(runCodeError, null, 2),
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      dispatch(resetRunCode());
+    }
+  }, [runCodeError, dispatch, toast]);
+
+  useEffect(() => {
+    if (getCodeError) {
+      toast({
+        title: 'Error',
+        description: typeof getCodeError === 'string' ? getCodeError : JSON.stringify(getCodeError, null, 2),
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      dispatch(resetGetCode());
+    }
+  }, [getCodeError, dispatch, toast]);
+
   const handleRunCode = () => {
-    // Simulate running the code and setting the output
-    setOutput(`Output for ${language} code:\n${code}`);
+    const codeData = {
+      script: code,
+      language: language,
+      versionIndex: '4',
+    };
+    dispatch(runCode(codeData));
   };
 
   const codeLines = code.split('\n');
@@ -67,9 +122,11 @@ export default function CodeEditorModal({}: CodeEditorModalProps) {
                   onChange={(e) => setLanguage(e.target.value)}
                   mr={4}
                 >
-                  <option value="JavaScript">JavaScript</option>
-                  <option value="Python">Python</option>
-                  <option value="Java">Java</option>
+                  {languages.map((lang) => (
+                    <option key={lang} value={lang}>
+                      {lang}
+                    </option>
+                  ))}
                 </Select>
                 <Button colorScheme={buttonColorScheme} onClick={handleRunCode}>
                   Run
@@ -100,7 +157,16 @@ export default function CodeEditorModal({}: CodeEditorModalProps) {
                   </Box>
                 </Flex>
               </Box>
-              <Box flex="1" border="1px solid" borderColor="gray.200" borderRadius="md" p={4}>
+              <Box flex="1" border="1px solid" borderColor="gray.200" borderRadius="md" p={4} position="relative">
+                {(runCodeLoading || getCodeLoading) && (
+                  <Spinner
+                    size="md"
+                    position="absolute"
+                    top="50%"
+                    left="50%"
+                    transform="translate(-50%, -50%)"
+                  />
+                )}
                 <Text fontFamily="'Courier New', Courier, monospace" fontSize="sm">
                   {output}
                 </Text>

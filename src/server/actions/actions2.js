@@ -346,7 +346,7 @@ export const checkSessionExpired = () => async (dispatch, getState) => {
   };
   
   // Action for getting code
-  export const getCode = (codeId) => async (dispatch, getState) => {
+  export const getCode = () => async (dispatch, getState) => {
     try {
       dispatch({
         type: GET_CODE_REQUEST
@@ -364,7 +364,7 @@ export const checkSessionExpired = () => async (dispatch, getState) => {
       };
   
       const { data } = await axios.get(
-        `${API_URL}/api/v1/code/${codeId}/`,
+        `${API_URL}/api/v1/code/`,
         config
       );
   
