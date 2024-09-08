@@ -18,8 +18,12 @@ import {
   Textarea,
   Spinner,
   useToast,
+  VStack,
+  HStack,
+  Badge,
+  Collapse,
 } from '@chakra-ui/react';
-import { ChevronRightIcon } from '@chakra-ui/icons';
+import { ChevronRightIcon, ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import languages from './languages'; // Import the languages list
 import { useDispatch, useSelector } from 'react-redux';
 import { runCode, resetRunCode } from 'server/actions/actions2'; // Import the actions
@@ -28,8 +32,13 @@ import { getCode, resetGetCode } from 'server/actions/actions2'; // Import the a
 export default function CodeEditorModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [code, setCode] = useState('');
-  const [language, setLanguage] = useState('JavaScript');
+  const [language, setLanguage] = useState('python3');
   const [output, setOutput] = useState('');
+  const [intervalId, setIntervalId] = useState(null);
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [retryCount, setRetryCount] = useState(0);
+  const [retryMessage, setRetryMessage] = useState('');
+  const [retryTimeoutId, setRetryTimeoutId] = useState(null);
 
   const textColor = useColorModeValue('secondaryGray.900', 'white');
   const cardColor = useColorModeValue('white', 'orange.700');
@@ -45,9 +54,10 @@ export default function CodeEditorModal() {
   useEffect(() => {
     if (runCodeOutput) {
       setOutput(''); // Clear the output before showing the spinner
-      setTimeout(() => {
+      const id = setInterval(() => {
         dispatch(getCode());
-      }, 2000); // Wait for 2 seconds before fetching the result
+      }, 2000); // Call getCode every 2 seconds
+      setIntervalId(id);
       dispatch(resetRunCode());
     }
   }, [runCodeOutput, dispatch]);
@@ -55,9 +65,13 @@ export default function CodeEditorModal() {
   useEffect(() => {
     if (getCodeOutput) {
       setOutput(typeof getCodeOutput === 'string' ? getCodeOutput : JSON.stringify(getCodeOutput, null, 2));
+      clearInterval(intervalId); // Clear the interval once output is received
+      clearTimeout(retryTimeoutId); // Clear any retry timeout
+      setRetryCount(0); // Reset retry count
+      setRetryMessage(''); // Clear retry message
       dispatch(resetGetCode());
     }
-  }, [getCodeOutput, dispatch]);
+  }, [getCodeOutput, intervalId, dispatch, retryTimeoutId]);
 
   useEffect(() => {
     if (runCodeError) {
@@ -74,16 +88,35 @@ export default function CodeEditorModal() {
 
   useEffect(() => {
     if (getCodeError) {
-      toast({
-        title: 'Error',
-        description: typeof getCodeError === 'string' ? getCodeError : JSON.stringify(getCodeError, null, 2),
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
+      setRetryCount(retryCount + 1);
+      if (retryCount >= 9) {
+        toast({
+          title: 'Error',
+          description: 'Server took too long to respond. 500 Internal Server Error',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+        clearInterval(intervalId); // Stop fetching
+        clearTimeout(retryTimeoutId); // Clear any retry timeout
+      } else {
+        const timeoutId = setTimeout(() => {
+          setRetryMessage(''); // Clear retry message
+          dispatch(getCode()); // Retry fetching
+        }, 5000); // Retry after 5 seconds
+        setRetryTimeoutId(timeoutId);
+        setRetryMessage('Trying again in 5 seconds...');
+      }
       dispatch(resetGetCode());
     }
-  }, [getCodeError, dispatch, toast]);
+  }, [getCodeError, retryCount, dispatch, toast, intervalId, retryTimeoutId]);
+
+  useEffect(() => {
+    return () => {
+      clearInterval(intervalId); // Clear interval on component unmount or modal close
+      clearTimeout(retryTimeoutId); // Clear retry timeout on component unmount or modal close
+    };
+  }, [intervalId, retryTimeoutId]);
 
   const handleRunCode = () => {
     const codeData = {
@@ -95,6 +128,90 @@ export default function CodeEditorModal() {
   };
 
   const codeLines = code.split('\n');
+
+  const renderOutput = (output) => {
+    if (!output) return null;
+
+    const parsedOutput = JSON.parse(output);
+    const { response } = parsedOutput;
+    const { output: codeOutput, error, statusCode, memory, cpuTime, compilationStatus, projectKey, isExecutionSuccess, isCompiled } = JSON.parse(response);
+
+    return (
+      <VStack align="stretch" spacing={4}>
+        <HStack justify="space-between">
+          <Text fontWeight="bold">Output:</Text>
+          <Badge colorScheme={isExecutionSuccess ? 'green' : 'red'}>
+            {isExecutionSuccess ? 'Success' : 'Failed'}
+          </Badge>
+        </HStack>
+        <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={4}>
+          <Text fontFamily="'Courier New', Courier, monospace" fontSize="sm">
+            {codeOutput || 'No output'}
+          </Text>
+        </Box>
+        <HStack justify="space-between">
+          <Text fontWeight="bold">Error:</Text>
+          <Badge colorScheme={error ? 'red' : 'green'}>
+            {error ? 'Error' : 'No Error'}
+          </Badge>
+        </HStack>
+        <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={4}>
+          <Text fontFamily="'Courier New', Courier, monospace" fontSize="sm">
+            {error || 'No error'}
+          </Text>
+        </Box>
+        <HStack justify="space-between" align="center">
+          <Text fontWeight="bold">Additional Info:</Text>
+          <IconButton
+            icon={isCollapsed ? <ChevronDownIcon /> : <ChevronUpIcon />}
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            aria-label="Toggle additional info"
+            size="sm"
+          />
+        </HStack>
+        <Collapse in={!isCollapsed} animateOpacity>
+          <VStack align="stretch" spacing={4}>
+            <HStack justify="space-between">
+              <Text fontWeight="bold">Status Code:</Text>
+              <Badge colorScheme={statusCode === 200 ? 'green' : 'red'}>
+                {statusCode}
+              </Badge>
+            </HStack>
+            <HStack justify="space-between">
+              <Text fontWeight="bold">Memory:</Text>
+              <Text>{memory} KB</Text>
+            </HStack>
+            <HStack justify="space-between">
+              <Text fontWeight="bold">CPU Time:</Text>
+              <Text>{cpuTime} seconds</Text>
+            </HStack>
+            <HStack justify="space-between">
+              <Text fontWeight="bold">Compilation Status:</Text>
+              <Badge colorScheme={compilationStatus === 'success' ? 'green' : 'red'}>
+                {compilationStatus || 'N/A'}
+              </Badge>
+            </HStack>
+            <HStack justify="space-between">
+              <Text fontWeight="bold">Project Key:</Text>
+              <Text>{projectKey || 'N/A'}</Text>
+            </HStack>
+            <HStack justify="space-between">
+              <Text fontWeight="bold">Execution Success:</Text>
+              <Badge colorScheme={isExecutionSuccess ? 'green' : 'red'}>
+                {isExecutionSuccess ? 'Yes' : 'No'}
+              </Badge>
+            </HStack>
+            <HStack justify="space-between">
+              <Text fontWeight="bold">Compiled:</Text>
+              <Badge colorScheme={isCompiled ? 'green' : 'red'}>
+                {isCompiled ? 'Yes' : 'No'}
+              </Badge>
+            </HStack>
+          </VStack>
+        </Collapse>
+      </VStack>
+    );
+  };
 
   return (
     <>
@@ -167,9 +284,8 @@ export default function CodeEditorModal() {
                     transform="translate(-50%, -50%)"
                   />
                 )}
-                <Text fontFamily="'Courier New', Courier, monospace" fontSize="sm">
-                  {output}
-                </Text>
+                {retryMessage && <Text>{retryMessage}</Text>}
+                {renderOutput(output)}
               </Box>
             </Flex>
           </ModalBody>

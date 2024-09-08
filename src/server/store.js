@@ -57,6 +57,7 @@ const reducer = combineReducers({
     askAgent: reducers2.askAgentReducer,
     checkSessionExpired: reducers2.checkSessionExpiredReducer,
     runCode: reducers2.runCodeReducer,
+    notificationList : reducers2.notificationListReducer
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ?

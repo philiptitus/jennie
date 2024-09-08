@@ -1,4 +1,4 @@
-import { Box, Button, Flex, IconButton, Input, Td, Text, Tr, useColorModeValue, useToast, Spinner } from '@chakra-ui/react';
+import { Box, Button, Flex, IconButton, Input, Td, Text, Tr, useColorModeValue, useToast, Spinner, Textarea } from '@chakra-ui/react';
 import { ViewIcon } from '@chakra-ui/icons';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { flexRender } from '@tanstack/react-table';
@@ -18,7 +18,8 @@ const ComplexTableRow = ({
   setViewedAnswer,
   id, // Added id as a parameter
   attempted, // Added attempted as a parameter
-  placeholder = 'Your answer' // Added placeholder as a parameter with default value
+  placeholder = 'Your answer', // Added placeholder as a parameter with default value
+  showSend
 }) => {
   const boxBg = useColorModeValue('gray.50', 'gray.700');
   const toast = useToast();
@@ -40,7 +41,7 @@ const ComplexTableRow = ({
         });
       }
       setShowAnswer((prev) => ({ ...prev, [id]: true })); // Unblur the answer immediately after success
-      dispatch(resetCodingQuestionUpdate());
+      dispatch(resetPreparationBlockUpdate());
     }
     if (error) {
       if (!toast.isActive(toastIdRef.current)) {
@@ -52,7 +53,7 @@ const ComplexTableRow = ({
           isClosable: true,
         });
       }
-      dispatch(resetCodingQuestionUpdate());
+      dispatch(resetPreparationBlockUpdate());
     }
   }, [success, error, dispatch, toast, id]);
 
@@ -63,6 +64,7 @@ const ComplexTableRow = ({
     }
     setShowAnswer((prev) => ({ ...prev, [id]: !prev[id] }));
     setViewedAnswer((prev) => ({ ...prev, [id]: true }));
+
 
     if (!toast.isActive(toastIdRef.current)) {
       toastIdRef.current = toast({
@@ -152,12 +154,16 @@ const ComplexTableRow = ({
             <Text fontSize='lg' fontWeight='bold' mb='4'>
               {row.original.question}
             </Text>
-            <Input
+            <Textarea
               placeholder={attempted ? placeholder : 'Your answer'}
               value={answers[row.original.id] || ''}
               onChange={(e) => handleAnswerChange(row.original.id, e.target.value)}
               mb='4'
             />
+
+{showSend &&
+
+            <div>
             {!attempted && (
               <Button
                 colorScheme='teal'
@@ -169,6 +175,11 @@ const ComplexTableRow = ({
                 {loading ? <Spinner size='xs' /> : 'Send'}
               </Button>
             )}
+            </div>
+
+}
+
+
             {!showAnswer[row.original.id] && !attempted && (
               <Flex align='center' mb='4'>
                 <Text fontSize='lg' fontWeight='bold' me='2'>

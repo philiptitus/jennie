@@ -8,7 +8,7 @@ import { getPreparationMaterialDetail, resetPreparationMaterialDetail } from 'se
 
 const columnHelper = createColumnHelper();
 
-export default function ComplexTable({ materialId }) {
+export default function PrepTable({ materialId }) {
   const textColor = useColorModeValue('secondaryGray.900', 'white');
   const borderColor = useColorModeValue('gray.200', 'whiteAlpha.100');
   const [showAnswer, setShowAnswer] = useState({});
@@ -25,10 +25,35 @@ export default function ComplexTable({ materialId }) {
   useEffect(() => {
     dispatch(getPreparationMaterialDetail(materialId));
 
+
     return () => {
       dispatch(resetPreparationMaterialDetail());
     };
   }, [dispatch, materialId]);
+
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: 'Error',
+        description: 'An error occurred while fetching the data.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+
+    if (!loading && material && material.blocks && material.blocks.length === 0) {
+      toast({
+        title: 'No Results',
+        description: 'No questions found.',
+        status: 'warning',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [loading, error, material, toast]);
+
+
 
   const data = useMemo(() => {
     if (material && material.blocks) {
@@ -152,6 +177,7 @@ export default function ComplexTable({ materialId }) {
           <Tbody>
             {table.getRowModel().rows.slice(0, 11).map((row) => (
               <ComplexTableRow
+                showSend={!material?.completed}
                 key={row.id}
                 row={row}
                 showAnswer={showAnswer}
@@ -162,7 +188,7 @@ export default function ComplexTable({ materialId }) {
                 setSubmitted={setSubmitted}
                 viewedAnswer={viewedAnswer}
                 setViewedAnswer={setViewedAnswer}
-                id={row.original.id} // Pass the block.id as the id parameter
+                id={materialId} // Pass the block.id as the id parameter
                 attempted={row.original.attempted}
                 placeholder={row.original.my_answer}
 

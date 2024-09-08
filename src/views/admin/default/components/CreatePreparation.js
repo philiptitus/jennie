@@ -58,6 +58,8 @@ export default function CreatePreparationModal({ jobId }: CreatePreparationModal
         duration: 5000,
         isClosable: true,
       });
+      dispatch(resetPreparationMaterialCreate());
+
     }
   }, [success, error, toast, onClose, dispatch]);
 

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -19,15 +19,11 @@ import DefaultAuth from "layouts/auth/Default";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
 import illustration from "assets/img/auth/auth.png";
-
-// Define the structure of the errors object
-interface Errors {
-  password?: string;
-  confirmPassword?: string;
-}
+import { useSelector, useDispatch } from 'react-redux';
+import { reset_password } from '../../../server/actions/userAction';
+import { NavLink } from "react-router-dom";
 
 function ResetPassword() {
-  // Chakra color mode
   const textColor = useColorModeValue("orange.700", "white");
   const textColorSecondary = "gray.400";
   const textColorDetails = useColorModeValue("orange.700", "secondaryGray.600");
@@ -38,16 +34,20 @@ function ResetPassword() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [errors, setErrors] = useState<Errors>({});
+  const [errors, setErrors] = useState({});
   const toast = useToast();
   const navigate = useNavigate();
+  const { uid, token } = useParams();
+  const dispatch = useDispatch();
+
+  const resetPassword = useSelector((state) => state.resetPassword);
+  const { error, loading, success } = resetPassword;
 
   const handlePasswordClick = () => setShowPassword(!showPassword);
-  const handleConfirmPasswordClick = () =>
-    setShowConfirmPassword(!showConfirmPassword);
+  const handleConfirmPasswordClick = () => setShowConfirmPassword(!showConfirmPassword);
 
-  const validateForm = (): Errors => {
-    const newErrors: Errors = {};
+  const validateForm = () => {
+    const newErrors = {};
     if (password.length < 8) {
       newErrors.password = "Password must be at least 8 characters long.";
     }
@@ -62,7 +62,19 @@ function ResetPassword() {
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
-      // If no errors, proceed with password reset logic
+      const data = {
+        password,
+        confirm_password: confirmPassword,
+        uidb64: uid,
+        token,
+      };
+
+      dispatch(reset_password(data));
+    }
+  };
+
+  useEffect(() => {
+    if (success) {
       toast({
         title: "Password changed successfully.",
         description: "You can now sign in with your new password.",
@@ -70,14 +82,21 @@ function ResetPassword() {
         duration: 5000,
         isClosable: true,
       });
-      // Reset form
-      setPassword("");
-      setConfirmPassword("");
-      setErrors({});
-      // Navigate to login page
-      navigate("/auth/sign-in");
+      setTimeout(() => {
+        navigate("/auth/sign-in");
+      }, 5000);
     }
-  };
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: error,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [success, error, navigate, toast]);
 
   return (
     <DefaultAuth illustrationBackground={illustration} image={illustration}>
@@ -207,6 +226,7 @@ function ResetPassword() {
             h="50"
             mb="24px"
             onClick={handleSubmit}
+            isLoading={loading}
           >
             Reset Password
           </Button>

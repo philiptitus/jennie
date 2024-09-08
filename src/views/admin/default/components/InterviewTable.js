@@ -148,7 +148,7 @@ export default function InterviewTable() {
       });
     }
 
-    if (success && interviews.length === 0) {
+    if (success && interviews?.length === 0) {
       toast({
         title: "No Interviews",
         description: "You don't have any interviews on my platform yet.",
@@ -160,7 +160,7 @@ export default function InterviewTable() {
   }, [error, loading, interviews, toast]);
 
   const filteredData = useMemo(() => {
-    return interviews.filter(interview =>
+    return interviews?.filter(interview =>
       interview.job_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       interview.interview_datetime.toLowerCase().includes(searchQuery.toLowerCase())
     ).slice(0, visibleInterviews);
@@ -217,7 +217,7 @@ export default function InterviewTable() {
           </Table>
         )}
       </Box>
-      {interviews.length > visibleInterviews && (
+      {interviews?.length > visibleInterviews && (
         <Flex justifyContent="center" mt="4">
           <IconButton
             icon={<ChevronDownIcon />}

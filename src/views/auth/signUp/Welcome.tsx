@@ -39,7 +39,7 @@ function WelcomeComponent() {
                 Hi, welcome! My name is Jennie. I am here to help you ace your interviews...
               </Text>
               <Button onClick={handleClose} colorScheme="teal">
-                Cancel
+                Proceed
               </Button>
             </Flex>
           </ModalBody>

@@ -98,7 +98,7 @@ const routes = [
   {
     name: 'Reset Password',
     layout: '/auth',
-    path: '/reset',
+    path: '/password-reset-confirm/:uid/:token',
     icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,
     component: <ResetCentered/>,
   },

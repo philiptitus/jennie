@@ -2,14 +2,13 @@ import { Box, Card, Flex, Table, Tbody, Td, Text, Th, Thead, Tr, useColorModeVal
 import { createColumnHelper, flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 import React, { useState, useMemo, useEffect } from 'react';
 import ComplexTableHeader from './DevelopmentTable/ComplexTableHeader';
-import ComplexTableRow from './DevelopmentTable/ComplexTableRow';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPreparationMaterialDetail, resetPreparationMaterialDetail } from 'server/actions/actions1'; // Update the path accordingly
 import CodingTableRow from './CodingTable/CodingTableRow';
 
 const columnHelper = createColumnHelper();
 
-export default function ComplexTable({ materialId }) {
+export default function CodingTable({ materialId }) {
   const textColor = useColorModeValue('secondaryGray.900', 'white');
   const borderColor = useColorModeValue('gray.200', 'whiteAlpha.100');
   const [showAnswer, setShowAnswer] = useState({});
@@ -174,6 +173,7 @@ export default function ComplexTable({ materialId }) {
           <Tbody>
             {table.getRowModel().rows.slice(0, 11).map((row) => (
               <CodingTableRow
+                showSend={!material?.completed}
                 key={row.id}
                 row={row}
                 showAnswer={showAnswer}

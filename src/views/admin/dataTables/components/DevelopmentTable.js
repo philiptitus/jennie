@@ -103,20 +103,23 @@ export default function DevelopmentTable() {
           SCORE
         </Text>
       ),
-      cell: (info) => (
-        <Flex align='center'>
-          <Text me='10px' color={textColor} fontSize='sm' fontWeight='700'>
-            {info.getValue()}%
-          </Text>
-          <Progress
-            variant='table'
-            colorScheme='brandScheme'
-            h='8px'
-            w='63px'
-            value={info.getValue()}
-          />
-        </Flex>
-      ),
+      cell: (info) => {
+        const score = parseFloat(info.getValue()).toFixed(2);
+        return (
+          <Flex align='center'>
+            <Text me='10px' color={textColor} fontSize='sm' fontWeight='700'>
+              {score}%
+            </Text>
+            <Progress
+              variant='table'
+              colorScheme='brandScheme'
+              h='8px'
+              w='63px'
+              value={score}
+            />
+          </Flex>
+        );
+      },
     }),
     columnHelper.accessor('ready', {
       id: 'ready',

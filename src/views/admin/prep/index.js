@@ -8,6 +8,8 @@ import CheckTable from 'views/admin/prep/components/CheckTable';
 import YouTubeTable from './components/YouTubeTable';
 import CodingTable from './components/CodingTable';
 import { markPreparationMaterial, resetPreparationMaterialMarking } from 'server/actions/actions1';
+import PrepTable from './components/DevelopmentTable';
+
 
 export default function Settings() {
   const { id = '1' } = useParams();  // Fetch id from URL parameters, default to '1' if not provided
@@ -52,7 +54,7 @@ export default function Settings() {
   const renderActiveComponent = () => {
     switch (activeComponent) {
       case 'DevelopmentTable':
-        return <DevelopmentTable materialId={id} />;
+        return <PrepTable materialId={id} />;
       case 'CodingTable':
         return <CodingTable materialId={id} />;
       case 'CheckTable':

@@ -109,13 +109,7 @@ function SignIn() {
           me='auto'
           mb={{ base: "20px", md: "auto" }}>
 
-          <Flex align='center' mb='25px'>
-            <HSeparator />
-            <Text color='gray.400' mx='14px'>
-              or
-            </Text>
-            <HSeparator />
-          </Flex>
+
           <FormControl>
             <FormLabel
               display='flex'

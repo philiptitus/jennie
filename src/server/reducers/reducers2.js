@@ -30,7 +30,11 @@ import {
     GET_CODE_REQUEST,
     GET_CODE_SUCCESS,
     GET_CODE_FAILURE,
-    GET_CODE_RESET
+    GET_CODE_RESET,
+    NOTIFICATION_LIST_REQUEST,
+    NOTIFICATION_LIST_SUCCESS,
+    NOTIFICATION_LIST_FAIL,
+    NOTIFICATION_LIST_RESET
 
   } from '../constants/constants2';
   
@@ -165,3 +169,24 @@ export const checkSessionExpiredReducer = (state = { sessions: [] }, action) => 
         return state;
     }
   };
+
+
+
+
+  export const notificationListReducer = (state = { notifications: [], seenIds: new Set() }, action) => {
+    switch (action.type) {
+      case NOTIFICATION_LIST_REQUEST:
+        return { loading: true, ...state };
+      case NOTIFICATION_LIST_SUCCESS:
+        const newNotifications = action.payload.results.filter(notification => !state.seenIds.has(notification.id));
+        const updatedSeenIds = new Set([...state.seenIds, ...newNotifications.map(notification => notification.id)]);
+        return { loading: false, notifications: [...state.notifications, ...newNotifications], seenIds: updatedSeenIds };
+      case NOTIFICATION_LIST_FAIL:
+        return { loading: false, error: action.payload };
+      case NOTIFICATION_LIST_RESET:
+        return { notifications: [], seenIds: new Set() };
+      default:
+        return state;
+    }
+  };
+  

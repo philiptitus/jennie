@@ -20,7 +20,8 @@ const CodingTableRow = ({
   setViewedAnswer,
   id,
   attempted,
-  placeholder = 'Your answer'
+  placeholder = 'Your answer',
+  showSend
 }) => {
   const boxBg = useColorModeValue('gray.50', 'gray.700');
   const toast = useToast();
@@ -167,6 +168,8 @@ const CodingTableRow = ({
               resize='vertical'
               minH='100px'
             />
+
+{showSend &&            <div>
             {!attempted && (
               <Button
                 colorScheme='teal'
@@ -178,6 +181,10 @@ const CodingTableRow = ({
                 {loading ? <Spinner size='xs' /> : 'Send'}
               </Button>
             )}
+</div>}
+
+
+
             {!showAnswer[row.original.id] && !attempted && (
               <Flex align='center' mb='4'>
                 <Text fontSize='lg' fontWeight='bold' me='2'>

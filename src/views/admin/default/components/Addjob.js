@@ -125,6 +125,8 @@ export default function AddJobModal() {
         duration: 5000,
         isClosable: true,
       });
+      dispatch(resetJobCreate());
+
     }
   }, [success, error, toast, onClose, dispatch]);
 
@@ -141,7 +143,7 @@ export default function AddJobModal() {
             <VStack spacing={4}>
               <FormControl isRequired>
                 <FormLabel>Title</FormLabel>
-                <Input
+                <Textarea
                   type="text"
                   name="title"
                   value={title}
@@ -158,7 +160,7 @@ export default function AddJobModal() {
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Company</FormLabel>
-                <Input
+                <Textarea
                   type="text"
                   name="company"
                   value={company}
@@ -167,7 +169,7 @@ export default function AddJobModal() {
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Location</FormLabel>
-                <Input
+                <Textarea
                   type="text"
                   name="location"
                   value={location}
@@ -181,11 +183,12 @@ export default function AddJobModal() {
                   name="actual_interview_date"
                   value={actualInterviewDate}
                   onChange={handleInputChange}
+                  style={{ backgroundColor: "black" }}
                 />
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Job URL</FormLabel>
-                <Input
+                <Textarea
                   type="url"
                   name="job_url"
                   value={jobUrl}

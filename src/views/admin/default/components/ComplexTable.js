@@ -45,6 +45,9 @@ export default function ComplexTable() {
   const jobList = useSelector((state) => state.jobList);
   const { loading, error, jobs, success } = jobList;
 
+  const jobCreate = useSelector((state) => state.jobCreate);
+  const { loading: createLoading, error: createError, success: createSuccess } = jobCreate;
+
   const columns = [
     columnHelper.accessor('title', {
       id: 'title',
@@ -176,7 +179,7 @@ export default function ComplexTable() {
       });
     }
 
-    if (success && jobs.length === 0) {
+    if (success && jobs?.length === 0) {
       toast({
         title: "No Jobs",
         description: "You don't have any jobs on my platform yet.",
@@ -185,10 +188,14 @@ export default function ComplexTable() {
         isClosable: true,
       });
     }
-  }, [error, loading, jobs, toast]);
+
+    if (createSuccess) {
+      dispatch(getJobList());
+    }
+  }, [error, loading, jobs, toast, dispatch, createSuccess]);
 
   const filteredData = useMemo(() => {
-    return jobs.filter(job =>
+    return jobs?.filter(job =>
       job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       job.actual_interview_date.toLowerCase().includes(searchQuery.toLowerCase()) ||
       job.job_url.toLowerCase().includes(searchQuery.toLowerCase())
@@ -246,7 +253,7 @@ export default function ComplexTable() {
           </Table>
         )}
       </Box>
-      {jobs.length > visibleJobs && (
+      {jobs?.length > visibleJobs && (
         <Flex justifyContent="center" mt="4">
           <Button onClick={handleLoadMore}>Load More</Button>
         </Flex>

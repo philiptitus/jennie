@@ -96,6 +96,8 @@ export default function ScheduleInterviewModal({ jobId }: ScheduleInterviewModal
         duration: 5000,
         isClosable: true,
       });
+      dispatch(resetInterviewCreate());
+
     }
   }, [success, error, toast, onClose, dispatch, interview_datetime]);
 

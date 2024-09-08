@@ -33,6 +33,10 @@ import {
   GET_CODE_SUCCESS,
   GET_CODE_FAILURE,
   GET_CODE_RESET,
+  NOTIFICATION_LIST_REQUEST,
+  NOTIFICATION_LIST_SUCCESS,
+  NOTIFICATION_LIST_FAIL,
+  NOTIFICATION_LIST_RESET,
   
 } from '../constants/constants2';
 
@@ -385,5 +389,49 @@ export const checkSessionExpired = () => async (dispatch, getState) => {
   export const resetGetCode = () => (dispatch) => {
     dispatch({
       type: GET_CODE_RESET
+    });
+  };
+
+
+
+
+  export const listNotifications = () => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: NOTIFICATION_LIST_REQUEST,
+      });
+  
+      const {
+        userLogin: { userInfo },
+      } = getState();
+  
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+  
+      const { data } = await axios.get(`${API_URL}/api/v1/notifications/`, config);
+      console.log(data)
+      dispatch({
+        type: NOTIFICATION_LIST_SUCCESS,
+        payload: data,
+      });
+
+    } catch (error) {
+      dispatch({
+        type: NOTIFICATION_LIST_FAIL,
+        payload: error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+      });
+    }
+  };
+
+
+
+  export const resetNotificationList = () => (dispatch) => {
+    dispatch({
+      type: NOTIFICATION_LIST_RESET,
     });
   };

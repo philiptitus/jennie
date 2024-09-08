@@ -920,7 +920,7 @@ export const resetCodingQuestionUpdate = () => (dispatch) => {
 export const markPreparationMaterial = (materialId) => async (dispatch, getState) => {
   try {
     dispatch({
-      type: PREPARATION_MATERIAL_MARKING_REQUEST
+      type: PREPARATION_MATERIAL_MARKING_REQUEST,
     });
 
     const {
@@ -929,13 +929,15 @@ export const markPreparationMaterial = (materialId) => async (dispatch, getState
 
     const config = {
       headers: {
-        'Content-type': 'application/json',
-        Authorization: `Bearer ${userInfo.token}`
-      }
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
     };
 
+    // Correctly passing the config as the third argument
     const { data } = await axios.post(
       `${API_URL}/api/v1/material/${materialId}/mark/`,
+      {}, // Empty object for the request body
       config
     );
 
@@ -946,12 +948,14 @@ export const markPreparationMaterial = (materialId) => async (dispatch, getState
   } catch (error) {
     dispatch({
       type: PREPARATION_MATERIAL_MARKING_FAIL,
-      payload: error.response && error.response.data.detail
-        ? error.response.data.detail
-        : error.message,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
     });
   }
 };
+
 
 export const resetPreparationMaterialMarking = () => (dispatch) => {
   dispatch({
