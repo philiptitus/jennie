@@ -1,38 +1,50 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Avatar, Flex, Progress, Text } from '@chakra-ui/react';
+import { Avatar, Flex, Progress, Text, Spinner, useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import {
   createColumnHelper, getCoreRowModel, getSortedRowModel, SortingState, useReactTable
 } from '@tanstack/react-table';
-import { interviewBlocks, interviewCodingQuestions } from './data';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchInterviewRoomDetails, resetFetchInterviewRoomDetails } from '../../../../server/actions/actions1';
 import SessionHeader from './NativeInterview/SessionHeader';
 import InterviewContent from './NativeInterview/InterviewContent';
 import InterviewCompletionDialog from './NativeInterview/InterviewCompletionDialog';
 
-type RowObj = {
-  name: string[];
-  artworks: number;
-  rating: number;
-};
+const columnHelper = createColumnHelper();
 
-const columnHelper = createColumnHelper<RowObj>();
-
-export default function NativeInterview(props: { tableData: any }) {
+export default function NativeInterview(props) {
   const { tableData } = props;
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState([]);
   const [startInterview, setStartInterview] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [questions, setQuestions] = useState<any[]>([]);
-  const [questionType, setQuestionType] = useState<string>('');
+  const [questions, setQuestions] = useState([]);
+  const [questionType, setQuestionType] = useState('');
   const [isOpen, setIsOpen] = useState(false);
-  const cancelRef = useRef<HTMLButtonElement>(null);
+  const cancelRef = useRef(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const toast = useToast();
+
+  const { loading, error, room } = useSelector(state => state.interviewRoomDetail);
+  const { session } = useSelector(state => state.latestInterviewSession);
 
   useEffect(() => {
-    const allQuestions = [...interviewBlocks, ...interviewCodingQuestions];
-    setQuestions(allQuestions);
-    setQuestionType('interview');
-  }, []);
+    if (session && session.id) {
+      dispatch(fetchInterviewRoomDetails(session.id));
+    }
+  }, [dispatch, session]);
+
+  useEffect(() => {
+    if (room && room.blocks && room.coding_questions) {
+      const allQuestions = [...room.blocks, ...room.coding_questions];
+      const cleanedQuestions = allQuestions.map(question => ({
+        ...question,
+        question: question.question.replace(/\*/g, '')
+      }));
+      setQuestions(cleanedQuestions);
+      setQuestionType('interview');
+    }
+  }, [room]);
 
   const handleStartInterview = () => {
     setStartInterview(true);
@@ -58,8 +70,8 @@ export default function NativeInterview(props: { tableData: any }) {
     columnHelper.accessor('name', {
       id: 'name',
       header: () => <Text>NAME</Text>,
-      cell: (info: any) => <Flex align='center'><Avatar src={info.getValue()[1]} /><Text>{info.getValue()[0]}</Text></Flex>
-    }), 
+      cell: (info) => <Flex align='center'><Avatar src={info.getValue()[1]} /><Text>{info.getValue()[0]}</Text></Flex>
+    }),
     columnHelper.accessor('artworks', {
       id: 'artworks',
       header: () => <Text>ARTWORKS</Text>,
@@ -81,6 +93,22 @@ export default function NativeInterview(props: { tableData: any }) {
     getSortedRowModel: getSortedRowModel(),
     debugTable: true
   });
+
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: 'Error',
+        description: error,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [error, toast]);
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <Flex direction='column' w='100%' overflowX={{ sm: 'scroll', lg: 'hidden' }}>

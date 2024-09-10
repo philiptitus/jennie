@@ -177,27 +177,35 @@ export const userDetailsReducer = (state = {user: {}}, action) =>{
 
 
 
-
-export const userUpdateProfileReducer = (state = { }, action) =>{
+export const userUpdateProfileReducer = (state = {}, action) => {
     switch (action.type) {
-        case USER_UPDATE_PROFILE_REQUEST:
-            return { loading: true } 
-        case USER_UPDATE_PROFILE_SUCCESS:
-            return { loading: false, success:true,userInfo: action.payload }     
-        case USER_UPDATE_PROFILE_FAIL:
-            return { loading: false, error:action.payload }
-
-        case  USER_UPDATE_PROFILE_RESET:
-            return {}
-      
-            
-        default:
-            return state
-    
+      case USER_UPDATE_PROFILE_REQUEST:
+        return { loading: true };
         
+      case USER_UPDATE_PROFILE_SUCCESS:
+        return {
+          loading: false,
+          success: true,
+          // Merge existing userInfo and only update name, username, and email
+          userInfo: {
+            ...state.userInfo,  // Keep other properties intact
+            name: action.payload.name,
+            username: action.payload.username,
+            email: action.payload.email
+          }
+        };
+  
+      case USER_UPDATE_PROFILE_FAIL:
+        return { loading: false, error: action.payload };
+  
+      case USER_UPDATE_PROFILE_RESET:
+        return {};
+  
+      default:
+        return state;
     }
-} 
-
+  };
+  
 
 
 export const userListReducer = (state = {users:[]}, action) =>{
