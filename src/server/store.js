@@ -1,4 +1,4 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import {thunk} from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
@@ -57,7 +57,7 @@ const reducer = combineReducers({
     askAgent: reducers2.askAgentReducer,
     checkSessionExpired: reducers2.checkSessionExpiredReducer,
     runCode: reducers2.runCodeReducer,
-    notificationList : reducers2.notificationListReducer
+    notificationList: reducers2.notificationListReducer
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ?
@@ -69,10 +69,13 @@ const initialState = {
 
 const middleware = [thunk];
 
+// Check if Redux DevTools is available, otherwise use normal middleware
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
 const store = createStore(
     reducer,
     initialState,
-    composeWithDevTools(applyMiddleware(...middleware))
+    composeEnhancers(applyMiddleware(...middleware))
 );
 
 export default store;
