@@ -45,6 +45,9 @@ export default function ComplexTable() {
   const jobList = useSelector((state) => state.jobList);
   const { loading, error, jobs, success } = jobList;
 
+  const jobDelete = useSelector((state) => state.jobDelete);
+  const { success: successDelete} = jobDelete;
+
   const jobCreate = useSelector((state) => state.jobCreate);
   const { loading: createLoading, error: createError, success: createSuccess } = jobCreate;
 
@@ -192,7 +195,10 @@ export default function ComplexTable() {
     if (createSuccess) {
       dispatch(getJobList());
     }
-  }, [error, loading, jobs, toast, dispatch, createSuccess]);
+    if (successDelete) {
+      dispatch(getJobList());
+    }
+  }, [error, loading, jobs, toast, dispatch, createSuccess, successDelete]);
 
   const filteredData = useMemo(() => {
     return jobs?.filter(job =>

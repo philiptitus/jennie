@@ -27,7 +27,7 @@ export default function Settings() {
     if (success) {
       toast({
         title: "Submission Successful",
-        description: "Your submission was a success. If you don't get your results within 10 minutes, please come back and submit again.",
+        description: "Your submission was a success. If you don't get your results notification within 5 minutes, please come back and submit again.",
         status: "success",
         duration: 9000,
         isClosable: true,

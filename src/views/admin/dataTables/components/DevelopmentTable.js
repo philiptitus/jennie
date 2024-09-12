@@ -159,7 +159,7 @@ export default function DevelopmentTable() {
       });
     }
 
-    if (success && materials.length === 0) {
+    if (success && materials?.length === 0) {
       toast({
         title: "No Materials",
         description: "You don't have any preparation materials yet.",
@@ -171,7 +171,7 @@ export default function DevelopmentTable() {
   }, [error, loading, materials, toast]);
 
   const filteredData = useMemo(() => {
-    return materials.filter(item =>
+    return materials?.filter(item =>
       item.title.toLowerCase().includes(searchQuery.toLowerCase())
     ).slice(0, visibleDataLength);
   }, [materials, searchQuery, visibleDataLength]);
@@ -257,7 +257,7 @@ export default function DevelopmentTable() {
           </Table>
         )}
       </Box>
-      {materials.length > visibleDataLength && (
+      {materials?.length > visibleDataLength && (
         <Flex justifyContent="center" mt="4">
           <IconButton
             icon={<ChevronDownIcon />}

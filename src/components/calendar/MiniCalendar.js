@@ -70,8 +70,8 @@ export default function MiniCalendar(props) {
       return eventDate === formattedDate;
     });
 
-    if (dayEvents.length > 0) {
-      setSelectedEvents({ date: formattedDate, events: dayEvents.map(event => ({ job_name: event.job_name, interview_datetime: event.interview_datetime })) });
+    if (dayEvents?.length > 0) {
+      setSelectedEvents({ date: formattedDate, events: dayEvents?.map(event => ({ job_name: event.job_name, interview_datetime: event.interview_datetime })) });
       onOpen();
     }
   };
@@ -83,7 +83,7 @@ export default function MiniCalendar(props) {
         month: 'long',
         year: 'numeric',
       });
-      if (interviews.some(event => {
+      if (interviews?.some(event => {
         const eventDate = new Date(event.interview_datetime).toLocaleDateString('en-GB', {
           day: 'numeric',
           month: 'long',

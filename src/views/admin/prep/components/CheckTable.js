@@ -47,7 +47,7 @@ export default function CheckTable({ materialId }) {
       });
     }
 
-    if (!loading && material && material.google_search_results && material.google_search_results.length === 0) {
+    if (!loading && material && material?.google_search_results && material.google_search_results?.length === 0) {
       toast({
         title: 'No Results',
         description: 'No Google search results found.',

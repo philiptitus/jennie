@@ -40,7 +40,7 @@ export default function CodingTable({ materialId }) {
       });
     }
 
-    if (!loading && material && material.coding_questions && material.coding_questions.length === 0) {
+    if (!loading && material && material.coding_questions && material.coding_questions?.length === 0) {
       toast({
         title: 'No Results',
         description: 'No coding questions found.',

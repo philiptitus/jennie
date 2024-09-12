@@ -50,6 +50,19 @@ function SignUp() {
   const handleClickConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
 
   const handleSubmit = () => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(email)) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid email address.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
     if (password !== confirmPassword) {
       toast({
         title: "Error",

@@ -42,7 +42,7 @@ export default function Footer() {
 						base: '20px',
 						md: '44px'
 					}}>
-					<Link fontWeight='500' color={linkColor} href='https://mrphilip.pythonanywhere.com/contact/'>
+					<Link fontWeight='500'  href='https://mrphilip.pythonanywhere.com/contact/' isExternal>
 						Support
 					</Link>
 				</ListItem>

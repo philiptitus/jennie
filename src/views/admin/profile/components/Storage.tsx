@@ -7,6 +7,7 @@ import Menu from 'components/menu/MainMenu';
 import React from 'react';
 // Assets
 import { MdOutlineCloudDone , MdOutlineAttachMoney} from 'react-icons/md';
+import Credits from './Credits';
 
 export default function Banner(props: { used: number; total: number; [x: string]: any }) {
 	const { used, total } = props;
@@ -19,6 +20,9 @@ export default function Banner(props: { used: number; total: number; [x: string]
 		<Card mb={{ base: '0px', lg: '20px' }} alignItems='center'>
 			<Flex w='100%'>
 				<Menu ms='auto' />
+			</Flex>
+			<Flex w='100%'>
+				<Credits  />
 			</Flex>
 			<IconBox
 				mx='auto'

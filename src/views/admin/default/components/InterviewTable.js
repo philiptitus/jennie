@@ -32,6 +32,20 @@ import { getUserInterviewList, resetUserInterviewList } from 'server/actions/act
 
 const columnHelper = createColumnHelper();
 
+// Helper function to format the date
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    timeZoneName: 'short'
+  }).format(date);
+};
+
 export default function InterviewTable() {
   const [sorting, setSorting] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -43,6 +57,12 @@ export default function InterviewTable() {
 
   const interviewList = useSelector((state) => state.userInterviewList);
   const { loading, error, interviews, success } = interviewList;
+
+  const interviewDelete = useSelector((state) => state.interviewDelete);
+  const { success:successDelete } = interviewDelete;
+
+  const interviewCreate = useSelector((state) => state.interviewCreate);
+  const { success:successCreate } = interviewCreate;
 
   const columns = [
     columnHelper.accessor('job_name', {
@@ -77,7 +97,7 @@ export default function InterviewTable() {
       ),
       cell: (info) => (
         <Text color={textColor} fontSize='sm'>
-          {info.getValue()}
+          {formatDate(info.getValue())}
         </Text>
       )
     }),
@@ -157,7 +177,15 @@ export default function InterviewTable() {
         isClosable: true,
       });
     }
-  }, [error, loading, interviews, toast]);
+
+    if (successDelete) {
+      dispatch(getUserInterviewList());
+    }
+
+    if (successCreate) {
+      dispatch(getUserInterviewList());
+    }
+  }, [error, loading, interviews, toast, successDelete, successCreate]);
 
   const filteredData = useMemo(() => {
     return interviews?.filter(interview =>

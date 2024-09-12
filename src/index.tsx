@@ -1,7 +1,7 @@
 import './assets/css/App.css';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import store from 'server/store';
 import { Provider } from 'react-redux';
 import App from './App';
@@ -28,41 +28,15 @@ const loadResponsiveVoiceScript = () => {
   }
 };
 
-// Function to detect if the user is on a mobile device
-const isMobileDevice = () => {
-  return /Mobi|Android|iPhone/i.test(navigator.userAgent);
-};
-
 const Root = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [isMobile, setIsMobile] = useState(false);
-
   useEffect(() => {
     loadResponsiveVoiceScript();
-
-    if (isMobileDevice()) {
-      setIsMobile(true);
-      onOpen();
-    }
-  }, [onOpen]);
+  }, []);
 
   return (
     <Provider store={store}>
       <BrowserRouter>
-        {isMobile ? (
-          <Modal isOpen={isOpen} onClose={onClose} isCentered>
-            <ModalOverlay />
-            <ModalContent maxW="90%" mx="auto" p={4}>
-              <ModalHeader>Platform Not Available</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                This Platform is not available on mobile just yet. Check back soon.
-              </ModalBody>
-            </ModalContent>
-          </Modal>
-        ) : (
-          <App />
-        )}
+        <App />
       </BrowserRouter>
     </Provider>
   );

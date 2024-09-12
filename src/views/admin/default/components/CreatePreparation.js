@@ -34,13 +34,14 @@ export default function CreatePreparationModal({ jobId }: CreatePreparationModal
 
   const handleContinue = () => {
     dispatch(createPreparationMaterial(jobId));
+
   };
 
   useEffect(() => {
     if (success) {
       toast({
         title: "Preparation Material Is being Created",
-        description: "Heads Up I will Notify you when your material is ready.",
+        description: "Heads Up I will Notify you when your material is ready if you dont get a notification in 5 minutes come back and try again.",
         status: "success",
         duration: 5000,
         isClosable: true,

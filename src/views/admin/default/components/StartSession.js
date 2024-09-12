@@ -44,9 +44,9 @@ export default function StartSessionModal({ interviewId }: StartSessionModalProp
     if (success) {
       toast({
         title: "Starting Interview Session",
-        description: `I am making the interview session for interview ID ${interviewId}. Please be patient; you will get a notification when it's ready.`,
+        description: `I am making the interview session for interview ID ${interviewId}. Please be patient; you will get a notification when it's ready, if oyu dont within 3 minutes try again`,
         status: "info",
-        duration: 5000,
+        duration: 10000,
         isClosable: true,
       });
 

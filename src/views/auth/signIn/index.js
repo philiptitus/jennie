@@ -19,12 +19,10 @@ import {
 } from "@chakra-ui/react";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
-import { HSeparator } from "components/separator/Separator";
 import DefaultAuth from "layouts/auth/Default";
 import illustration from "assets/img/auth/auth.png";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "server/actions/userAction"; // Update the path accordingly
-import { RootState } from "server/storeTypes"; // Update the path accordingly
 
 function SignIn() {
   // Chakra color mode
@@ -45,6 +43,19 @@ function SignIn() {
   const handleClick = () => setShow(!show);
 
   const handleSubmit = () => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(email)) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid email address.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
     dispatch(login(email, password));
   };
 
@@ -108,8 +119,6 @@ function SignIn() {
           mx={{ base: "auto", lg: "unset" }}
           me='auto'
           mb={{ base: "20px", md: "auto" }}>
-
-
           <FormControl>
             <FormLabel
               display='flex'
