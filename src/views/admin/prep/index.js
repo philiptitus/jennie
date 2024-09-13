@@ -9,7 +9,7 @@ import YouTubeTable from './components/YouTubeTable';
 import CodingTable from './components/CodingTable';
 import { markPreparationMaterial, resetPreparationMaterialMarking } from 'server/actions/actions1';
 import PrepTable from './components/DevelopmentTable';
-
+import InstructionModal from './components/InstructionModal';  // Import the InstructionModal
 
 export default function Settings() {
   const { id = '1' } = useParams();  // Fetch id from URL parameters, default to '1' if not provided
@@ -22,6 +22,7 @@ export default function Settings() {
   const { loading, error, success } = preparationMaterialMarking;
 
   const [activeComponent, setActiveComponent] = useState('DevelopmentTable');
+  const [showInstructionModal, setShowInstructionModal] = useState(true);  // State for the instruction modal
 
   useEffect(() => {
     if (success) {
@@ -109,6 +110,7 @@ export default function Settings() {
       <Box mb="20px">
         <Menu>
           <MenuButton as={Button} leftIcon={<Icon as={FaBars} />} colorScheme="orange">
+          More Materials
           </MenuButton>
           <MenuList>
             <MenuItem onClick={() => setActiveComponent('DevelopmentTable')}>
@@ -130,6 +132,12 @@ export default function Settings() {
       <SimpleGrid mb="20px" columns={{ sm: 1, md: 2, lg: 1 }} spacing={{ base: '20px', xl: '20px' }}>
         {renderActiveComponent()}
       </SimpleGrid>
+
+      {/* Instruction Modal */}
+      <InstructionModal
+        isOpen={showInstructionModal}
+        onClose={() => setShowInstructionModal(false)}
+      />
     </Box>
   );
 }

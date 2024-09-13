@@ -122,7 +122,8 @@ export default function InterviewTable() {
       cell: (info) => {
         const interviewDateTime = new Date(info.row.original.interview_datetime);
         const currentDateTime = new Date();
-        if (interviewDateTime > currentDateTime) {
+        const oneHourLater = new Date(interviewDateTime.getTime() + 60 * 60 * 1000);
+        if (currentDateTime < oneHourLater) {
           return <ChangeTime interviewId={info.row.original.id} />;
         }
         return null;
@@ -141,7 +142,8 @@ export default function InterviewTable() {
       cell: (info) => {
         const interviewDateTime = new Date(info.row.original.interview_datetime);
         const currentDateTime = new Date();
-        if (interviewDateTime > currentDateTime) {
+        const oneHourLater = new Date(interviewDateTime.getTime() + 60 * 60 * 1000);
+        if (currentDateTime < oneHourLater) {
           return <StartSessionModal interviewId={info.row.original.id} />;
         }
         return null;

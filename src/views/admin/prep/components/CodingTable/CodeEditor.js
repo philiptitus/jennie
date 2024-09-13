@@ -115,8 +115,9 @@ export default function CodeEditorModal() {
     return () => {
       clearInterval(intervalId); // Clear interval on component unmount or modal close
       clearTimeout(retryTimeoutId); // Clear retry timeout on component unmount or modal close
+      dispatch(resetGetCode()); // Reset getCode action when modal is closed
     };
-  }, [intervalId, retryTimeoutId]);
+  }, [intervalId, retryTimeoutId, dispatch]);
 
   const handleRunCode = () => {
     const codeData = {
@@ -213,6 +214,36 @@ export default function CodeEditorModal() {
     );
   };
 
+  const handleClose = () => {
+    dispatch(resetRunCode());
+    dispatch(resetGetCode());
+    setCode(''); // Reset the code
+    setOutput(''); // Reset the output
+    setLanguage('python3'); // Reset the language
+    setIntervalId(null); // Reset the interval ID
+    setIsCollapsed(true); // Reset the collapsed state
+    setRetryCount(0); // Reset the retry count
+    setRetryMessage(''); // Reset the retry message
+    setRetryTimeoutId(null); // Reset the retry timeout ID
+    onClose();
+  };
+
+  useEffect(() => {
+    if (!isOpen) {
+      handleClose();
+    } else {
+      // Reset state when the modal is opened
+      setCode('');
+      setOutput('');
+      setLanguage('python3');
+      setIntervalId(null);
+      setIsCollapsed(true);
+      setRetryCount(0);
+      setRetryMessage('');
+      setRetryTimeoutId(null);
+    }
+  }, [isOpen]);
+
   return (
     <>
       <Flex justify="center">
@@ -225,7 +256,7 @@ export default function CodeEditorModal() {
         />
       </Flex>
 
-      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <Modal isOpen={isOpen} onClose={handleClose} size="xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader color={textColor}>Code Editor</ModalHeader>
@@ -245,7 +276,12 @@ export default function CodeEditorModal() {
                     </option>
                   ))}
                 </Select>
-                <Button colorScheme={buttonColorScheme} onClick={handleRunCode}>
+                <Button
+                  colorScheme={buttonColorScheme}
+                  onClick={handleRunCode}
+                  isLoading={runCodeLoading || getCodeLoading}
+                  loadingText="Running"
+                >
                   Run
                 </Button>
               </Flex>
@@ -275,15 +311,6 @@ export default function CodeEditorModal() {
                 </Flex>
               </Box>
               <Box flex="1" border="1px solid" borderColor="gray.200" borderRadius="md" p={4} position="relative">
-                {(runCodeLoading || getCodeLoading) && (
-                  <Spinner
-                    size="md"
-                    position="absolute"
-                    top="50%"
-                    left="50%"
-                    transform="translate(-50%, -50%)"
-                  />
-                )}
                 {retryMessage && <Text>{retryMessage}</Text>}
                 {renderOutput(output)}
               </Box>
@@ -291,7 +318,7 @@ export default function CodeEditorModal() {
           </ModalBody>
 
           <ModalFooter>
-            <Button variant="ghost" onClick={onClose}>
+            <Button variant="ghost" onClick={handleClose}>
               Close
             </Button>
           </ModalFooter>
