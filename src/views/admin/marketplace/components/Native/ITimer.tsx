@@ -61,7 +61,7 @@ const Timer: React.FC<TimerProps> = ({ question, onNextQuestion, isSpeaking, set
   const startQuestionTimer = () => {
     questionTimerRef.current = setInterval(() => {
       setQuestionTimer((prevTimer) => {
-        if (prevTimer >= 15) {
+        if (prevTimer >= 85) {
           clearInterval(questionTimerRef.current as NodeJS.Timeout);
           speak("I will just move on to the next question.")
             .then(onNextQuestion);

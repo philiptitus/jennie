@@ -20,6 +20,9 @@ export default function NativeInterview(props) {
   const [questions, setQuestions] = useState([]);
   const [questionType, setQuestionType] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+  const [allIds, setAllIds] = useState([]);
+  const [allTypes, setAllTypes] = useState([]);
+  const [fullQuestions, setFullQuestions] = useState([]); // New state for fullQuestions
   const cancelRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -36,13 +39,28 @@ export default function NativeInterview(props) {
 
   useEffect(() => {
     if (room && room.blocks && room.coding_questions) {
-      const allQuestions = [...room.blocks, ...room.coding_questions];
+      const allQuestions = [...room.blocks.map(block => ({ ...block, type: 'block' })), ...room.coding_questions.map(coding => ({ ...coding, type: 'coding_question' }))];
       const cleanedQuestions = allQuestions.map(question => ({
         ...question,
         question: question.question.replace(/\*/g, '')
       }));
+
+      const ids = allQuestions.map(question => question.id);
+      const types = allQuestions.map(question => question.type);
+
+      setAllIds(ids);
+      setAllTypes(types);
       setQuestions(cleanedQuestions);
       setQuestionType('interview');
+
+      // Create the fullQuestions list
+      const fullQuestionsList = cleanedQuestions.map((question, index) => ({
+        id: ids[index],
+        question: question.question,
+        type: types[index]
+      }));
+
+      setFullQuestions(fullQuestionsList);
     }
   }, [room]);
 
@@ -52,7 +70,7 @@ export default function NativeInterview(props) {
   };
 
   const handleNextQuestion = () => {
-    if (currentQuestionIndex < questions.length - 1) {
+    if (currentQuestionIndex < fullQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       setStartInterview(false);
@@ -115,13 +133,13 @@ export default function NativeInterview(props) {
       <SessionHeader />
       <InterviewContent
         startInterview={startInterview}
-        questions={questions}
+        questions={fullQuestions}
         currentQuestionIndex={currentQuestionIndex}
         questionType={questionType}
         handleStartInterview={handleStartInterview}
         handleNextQuestion={handleNextQuestion}
       />
-      <InterviewCompletionDialog isOpen={isOpen} cancelRef={cancelRef} handleClose={handleClose} />
+      <InterviewCompletionDialog isOpen={isOpen} cancelRef={cancelRef} handleClose={handleClose} id={session?.id}/>
     </Flex>
   );
 }

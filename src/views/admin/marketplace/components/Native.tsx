@@ -11,6 +11,7 @@ import NativeAgent from './NativeAgent';
 import Timer from './Native/ITimer';
 import SpeechRecognition from './Native/SpeechRecognition';
 import ExitModal from './Native/ExitModal';
+import CodeEditorModal from 'views/admin/prep/components/CodingTable/CodeEditor';
 
 type InterviewQuestionNativeProps = {
   question: any;
@@ -20,7 +21,7 @@ type InterviewQuestionNativeProps = {
 
 const InterviewQuestionNative: React.FC<InterviewQuestionNativeProps> = ({ question, questionType, onNextQuestion }) => {
   const [answer, setAnswer] = useState('');
-  const [isSliderOpen, setIsSliderOpen] = useState(false);
+  const [isSliderOpen, setIsSliderOpen] = useState(true);
   const [isSliderOpen2, setIsSliderOpen2] = useState(false);
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);

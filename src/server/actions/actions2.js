@@ -59,7 +59,7 @@ export const updateInterviewBlock = (blockId, blockData) => async (dispatch, get
     };
 
     const { data } = await axios.put(
-      `${API_URL}/api/v1/p-blocks/${blockId}/update/`,
+      `${API_URL}/api/v1/i-blocks/${blockId}/update/`,
       blockData,
       config
     );
@@ -103,7 +103,7 @@ export const updateInterviewCodingQuestion = (questionId, questionData) => async
     };
 
     const { data } = await axios.put(
-      `${API_URL}/api/v1/code/${questionId}/update/`,
+      `${API_URL}/api/v1/icode/${questionId}/update/`,
       questionData,
       config
     );
@@ -148,7 +148,7 @@ export const markInterviewRoom = (materialId) => async (dispatch, getState) => {
 
     const { data } = await axios.post(
       `${API_URL}/api/v1/room/${materialId}/mark/`,
-      
+      {},
       config
     );
 

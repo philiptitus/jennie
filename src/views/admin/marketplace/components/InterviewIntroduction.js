@@ -24,9 +24,9 @@ const InterviewIntroduction = ({ onStart }) => {
   useEffect(() => {
     dispatch(getLatestInterviewSession());
 
-    return () => {
-      dispatch(resetLatestInterviewSession());
-    };
+    // return () => {
+    //   dispatch(resetLatestInterviewSession());
+    // };
   }, [dispatch]);
 
   useEffect(() => {
@@ -59,7 +59,7 @@ const InterviewIntroduction = ({ onStart }) => {
           title: 'Success',
           description: 'Latest interview session found.',
           status: 'success',
-          duration: 5000,
+          duration: 1000,
           isClosable: true,
         });
       }

@@ -34,11 +34,8 @@ export default function CodeEditorModal() {
   const [code, setCode] = useState('');
   const [language, setLanguage] = useState('python3');
   const [output, setOutput] = useState('');
-  const [intervalId, setIntervalId] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(true);
-  const [retryCount, setRetryCount] = useState(0);
-  const [retryMessage, setRetryMessage] = useState('');
-  const [retryTimeoutId, setRetryTimeoutId] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const textColor = useColorModeValue('secondaryGray.900', 'white');
   const cardColor = useColorModeValue('white', 'orange.700');
@@ -54,24 +51,21 @@ export default function CodeEditorModal() {
   useEffect(() => {
     if (runCodeOutput) {
       setOutput(''); // Clear the output before showing the spinner
-      const id = setInterval(() => {
+      setIsProcessing(true);
+
+      setTimeout(() => {
         dispatch(getCode());
-      }, 2000); // Call getCode every 2 seconds
-      setIntervalId(id);
-      dispatch(resetRunCode());
+      }, 10000); // Wait for 10 seconds before dispatching getCode
     }
   }, [runCodeOutput, dispatch]);
 
   useEffect(() => {
     if (getCodeOutput) {
       setOutput(typeof getCodeOutput === 'string' ? getCodeOutput : JSON.stringify(getCodeOutput, null, 2));
-      clearInterval(intervalId); // Clear the interval once output is received
-      clearTimeout(retryTimeoutId); // Clear any retry timeout
-      setRetryCount(0); // Reset retry count
-      setRetryMessage(''); // Clear retry message
+      setIsProcessing(false);
       dispatch(resetGetCode());
     }
-  }, [getCodeOutput, intervalId, dispatch, retryTimeoutId]);
+  }, [getCodeOutput, dispatch]);
 
   useEffect(() => {
     if (runCodeError) {
@@ -88,36 +82,23 @@ export default function CodeEditorModal() {
 
   useEffect(() => {
     if (getCodeError) {
-      setRetryCount(retryCount + 1);
-      if (retryCount >= 9) {
-        toast({
-          title: 'Error',
-          description: 'Server took too long to respond. 500 Internal Server Error',
-          status: 'error',
-          duration: 3000,
-          isClosable: true,
-        });
-        clearInterval(intervalId); // Stop fetching
-        clearTimeout(retryTimeoutId); // Clear any retry timeout
-      } else {
-        const timeoutId = setTimeout(() => {
-          setRetryMessage(''); // Clear retry message
-          dispatch(getCode()); // Retry fetching
-        }, 5000); // Retry after 5 seconds
-        setRetryTimeoutId(timeoutId);
-        setRetryMessage('Trying again in 5 seconds...');
-      }
+      setIsProcessing(false);
+      toast({
+        title: 'Error',
+        description: 'Server took too long to respond. 500 Internal Server Error',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
       dispatch(resetGetCode());
     }
-  }, [getCodeError, retryCount, dispatch, toast, intervalId, retryTimeoutId]);
+  }, [getCodeError, dispatch, toast]);
 
   useEffect(() => {
     return () => {
-      clearInterval(intervalId); // Clear interval on component unmount or modal close
-      clearTimeout(retryTimeoutId); // Clear retry timeout on component unmount or modal close
       dispatch(resetGetCode()); // Reset getCode action when modal is closed
     };
-  }, [intervalId, retryTimeoutId, dispatch]);
+  }, [dispatch]);
 
   const handleRunCode = () => {
     const codeData = {
@@ -220,11 +201,8 @@ export default function CodeEditorModal() {
     setCode(''); // Reset the code
     setOutput(''); // Reset the output
     setLanguage('python3'); // Reset the language
-    setIntervalId(null); // Reset the interval ID
+    setIsProcessing(false); // Reset the processing state
     setIsCollapsed(true); // Reset the collapsed state
-    setRetryCount(0); // Reset the retry count
-    setRetryMessage(''); // Reset the retry message
-    setRetryTimeoutId(null); // Reset the retry timeout ID
     onClose();
   };
 
@@ -236,11 +214,8 @@ export default function CodeEditorModal() {
       setCode('');
       setOutput('');
       setLanguage('python3');
-      setIntervalId(null);
+      setIsProcessing(false);
       setIsCollapsed(true);
-      setRetryCount(0);
-      setRetryMessage('');
-      setRetryTimeoutId(null);
     }
   }, [isOpen]);
 
@@ -311,7 +286,12 @@ export default function CodeEditorModal() {
                 </Flex>
               </Box>
               <Box flex="1" border="1px solid" borderColor="gray.200" borderRadius="md" p={4} position="relative">
-                {retryMessage && <Text>{retryMessage}</Text>}
+                {isProcessing && (
+                  <Flex justify="center" align="center" h="100%">
+                    <Spinner />
+                    <Text ml={2}>Processing...</Text>
+                  </Flex>
+                )}
                 {renderOutput(output)}
               </Box>
             </Flex>

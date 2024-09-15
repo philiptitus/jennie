@@ -1,22 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Text, Input, Flex, IconButton, useColorModeValue } from '@chakra-ui/react';
+import { Box, Button, Text, Input, Flex, IconButton, useColorModeValue, Spinner, useToast } from '@chakra-ui/react';
 import { CheckIcon, CloseIcon, RepeatIcon } from '@chakra-ui/icons';
 import TimerDisplay from './TimerDisplay'; // Import the TimerDisplay component
+import { useDispatch, useSelector } from 'react-redux';
+import { getAgent, askAgent, resetAskAgent, resetGetAgent } from '../../../../server/actions/actions2'; // Import the actions
+import 'responsivevoice';
 
-type SliderModalProps = {
-  isOpen: boolean;
-  question: any;
-  questionType: string;
-  answer: string;
-  setAnswer: (value: string) => void;
-  onSkip: () => void;
-  onSpeakAnswer: () => void;
-  onClose: () => void;
-  isSpeaking: boolean;
-  setIsSpeaking: (value: boolean) => void;
-};
-
-const NativeAgent: React.FC<SliderModalProps> = ({
+const NativeAgent = ({
   isOpen,
   question,
   questionType,
@@ -35,45 +25,71 @@ const NativeAgent: React.FC<SliderModalProps> = ({
   const buttonColorScheme = useColorModeValue('teal', 'orange');
   const iconButtonColorScheme = useColorModeValue('blue', 'orange');
 
+  const dispatch = useDispatch();
+  const toast = useToast();
+
+  const { loading, error, room } = useSelector(state => state.interviewRoomDetail);
+  const { session } = useSelector(state => state.latestInterviewSession);
+  const { response, success, loading: agentLoading, error: agentError } = useSelector(state => state.askAgent);
+  const { loading: loadingGet, success: getSuccess, agent: agentResponse, error: getError } = useSelector(state => state.getAgent);
+
   const [aiResponse, setAiResponse] = useState('');
   const [displayedResponse, setDisplayedResponse] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const dummyResponses = [
-    "Sure, I can help with that.",
-    "Let me clarify that for you.",
-    "I understand your concern.",
-    "Here's what you need to know.",
-    "I'll provide the details you need."
-  ];
+  const handleSubmit = async () => {
+    if (!session || !session.id) {
+      toast({
+        title: 'Error',
+        description: 'Session ID is missing',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
 
-  const handleSubmit = () => {
-    const randomResponse = dummyResponses[Math.floor(Math.random() * dummyResponses.length)];
-    setAiResponse(randomResponse);
-    setDisplayedResponse('');
+    const queryData = {
+      question: question.question,
+      query: answer,
+    };
+
+    dispatch(askAgent(session.id, queryData));
+    setIsProcessing(true);
+
+    setTimeout(() => {
+      dispatch(getAgent());
+    }, 10000);
   };
 
   useEffect(() => {
-    if (aiResponse) {
-      let i = 0;
-      const interval = setInterval(() => {
-        setDisplayedResponse(aiResponse.slice(0, i));
-        i++;
-        if (i > aiResponse.length) {
-          clearInterval(interval);
-          speak(aiResponse);
-        }
-      }, 50); // Adjust the interval to control the typing speed
+    if (getSuccess && agentResponse) {
+      console.log(agentResponse);
+      setAiResponse(agentResponse.response);
+      setDisplayedResponse('');
+      setIsProcessing(false);
+    } else if (getError) {
+      setIsProcessing(false);
+      speak('Sorry, I am currently experiencing technical difficulties.');
+    }
+  }, [getSuccess, agentResponse, getError]);
 
-      return () => clearInterval(interval);
+  useEffect(() => {
+    if (aiResponse) {
+      setDisplayedResponse(aiResponse);
+      speak(aiResponse);
     }
   }, [aiResponse]);
 
-  const speak = (text: string) => {
+  const speak = (text) => {
     setIsSpeaking(true);
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-AU'; // Australian English
-    utterance.onend = () => setIsSpeaking(false);
-    window.speechSynthesis.speak(utterance);
+    window.responsiveVoice.speak(text, "Australian Female", {
+      onstart: () => setIsSpeaking(true),
+      onend: () => {
+        setIsSpeaking(false);
+        dispatch(resetGetAgent()); // Dispatch resetGetAgent action after speaking ends
+      },
+    });
   };
 
   return (
@@ -107,6 +123,15 @@ const NativeAgent: React.FC<SliderModalProps> = ({
             bg={inputBgColor}
             color={textColor}
           />
+          {isProcessing && (
+            <Box mt={4}>
+              <Text fontSize="lg" color={textColor}>
+                Jennie is thinking...
+              </Text>
+              <Spinner />
+            </Box>
+          )}
+          {agentLoading && <Spinner />}
           {aiResponse && (
             <Box mt={4}>
               <Text fontSize="lg" color={textColor}>
