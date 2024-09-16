@@ -30,9 +30,9 @@ const InterviewCompletionDialog = ({ isOpen, cancelRef, handleClose, id }) => {
     if (success) {
       toast({
         title: 'Success',
-        description: 'Interview room marked successfully.',
+        description: 'Interview response is being marked please check your notifications any moment from now for further updates and your email too.',
         status: 'success',
-        duration: 3000,
+        duration: 10000,
         isClosable: true,
       });
 

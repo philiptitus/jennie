@@ -51,9 +51,9 @@ const SliderModal = ({
     if (blockSuccess || codingSuccess) {
       toast({
         title: 'Success',
-        description: 'Answer submitted successfully.',
+        description: 'Answer saved.',
         status: 'success',
-        duration: 5000,
+        duration: 1000,
         isClosable: true,
       });
       dispatch(resetInterviewBlockUpdate());
