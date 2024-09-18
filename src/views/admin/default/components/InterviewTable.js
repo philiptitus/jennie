@@ -29,6 +29,7 @@ import InterviewTableHeader from './InterviewTable/InterviewTableHeader';
 import InterviewTableBody from './InterviewTable/InterviewTableBody';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserInterviewList, resetUserInterviewList } from 'server/actions/actions1'; // Update the path accordingly
+import { checkSessionExpired, resetCheckSessionExpired } from 'server/actions/actions2'; // Update the path accordingly
 
 const columnHelper = createColumnHelper();
 
@@ -153,9 +154,13 @@ export default function InterviewTable() {
 
   useEffect(() => {
     dispatch(getUserInterviewList());
+    dispatch(checkSessionExpired());
+
 
     return () => {
       dispatch(resetUserInterviewList());
+      dispatch(resetCheckSessionExpired());
+
     };
   }, [dispatch]);
 

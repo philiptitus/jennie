@@ -282,6 +282,7 @@ export const checkSessionExpired = () => async (dispatch, getState) => {
   
       const { data } = await axios.get(
         `${API_URL}/api/v1/expired/`,
+        {},
         config
       );
   
@@ -290,6 +291,7 @@ export const checkSessionExpired = () => async (dispatch, getState) => {
         payload: data,
       });
     } catch (error) {
+      
       dispatch({
         type: CHECK_SESSION_EXPIRED_FAILURE,
         payload: error.response && error.response.data.detail
