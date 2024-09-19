@@ -260,46 +260,40 @@ export const resetAskAgent = () => (dispatch) => {
 };
 
 
-
-
-// Action for checking expired sessions
 export const checkSessionExpired = () => async (dispatch, getState) => {
-    try {
-      dispatch({
-        type: CHECK_SESSION_EXPIRED_REQUEST
-      });
-  
-      const {
-        userLogin: { userInfo },
-      } = getState();
-  
-      const config = {
-        headers: {
-          'Content-type': 'application/json',
-          Authorization: `Bearer ${userInfo.token}`
-        }
-      };
-  
-      const { data } = await axios.get(
-        `${API_URL}/api/v1/expired/`,
-        {},
-        config
-      );
-  
-      dispatch({
-        type: CHECK_SESSION_EXPIRED_SUCCESS,
-        payload: data,
-      });
-    } catch (error) {
-      
-      dispatch({
-        type: CHECK_SESSION_EXPIRED_FAILURE,
-        payload: error.response && error.response.data.detail
+  try {
+    dispatch({
+      type: CHECK_SESSION_EXPIRED_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`, // Ensure the token is available
+      },
+    };
+
+    const { data } = await axios.post(`${API_URL}/api/v1/expired/`, {}, config);
+
+    dispatch({
+      type: CHECK_SESSION_EXPIRED_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: CHECK_SESSION_EXPIRED_FAILURE,
+      payload:
+        error.response && error.response.data.detail
           ? error.response.data.detail
           : error.message,
-      });
-    }
-  };
+    });
+  }
+};
+
   
   export const resetCheckSessionExpired = () => (dispatch) => {
     dispatch({

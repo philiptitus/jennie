@@ -8,7 +8,7 @@ import Dropzone from 'views/admin/profile/components/Dropzone';
 
 // Redux Imports
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserProfile } from "server/actions/userAction";
+import { updateUserProfile , getUserDetails} from "server/actions/userAction";
 import { useNavigate } from "react-router-dom";
 
 export default function Upload(props: { used?: number; total?: number; [x: string]: any }) {
@@ -33,6 +33,19 @@ export default function Upload(props: { used?: number; total?: number; [x: strin
 		const user = { username, email, password };
 		dispatch(updateUserProfile(user));
 	};
+
+	const userLogin = useSelector((state) => state.userLogin);
+	const { userInfo } = userLogin;
+	const userDetails = useSelector((state) => state.userDetails);
+	const { loading: userDetailsLoading, error: userDetailsError, user } = userDetails;
+  
+
+	useEffect(() => {
+		if (userInfo) {
+
+		  dispatch(getUserDetails());
+		}
+	  }, [userInfo, navigate, dispatch]);
 
 	useEffect(() => {
 		if (success) {
@@ -75,7 +88,7 @@ export default function Upload(props: { used?: number; total?: number; [x: strin
 						Username
 					</Text>
 					<Input
-						placeholder='Enter your new username'
+						placeholder={user?.name}
 						mb='20px'
 						variant='filled'
 						bg={useColorModeValue('gray.100', 'gray.700')}
@@ -88,7 +101,7 @@ export default function Upload(props: { used?: number; total?: number; [x: strin
 						Email
 					</Text>
 					<Input
-						placeholder='Enter your new email'
+						placeholder={user?.email}
 						mb='20px'
 						variant='filled'
 						bg={useColorModeValue('gray.100', 'gray.700')}

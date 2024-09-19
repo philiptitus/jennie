@@ -11,6 +11,7 @@ import {
   Spinner,
   useToast,
 } from '@chakra-ui/react';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getUserDetails } from 'server/actions/userAction';
@@ -140,8 +141,8 @@ export default function UserReports() {
       </SimpleGrid>
 
       <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px' mb='20px'>
-        {/* <TotalSpent /> */}
-        {/* <WeeklyRevenue /> */}
+      <PieCard />
+      <AddJobModal />
       </SimpleGrid>
       <SimpleGrid columns={{ base: 1, md: 1, xl: 1 }} gap='20px' mb='20px'>
         {/* <CheckTable tableData={tableDataCheck} /> */}
@@ -154,8 +155,7 @@ export default function UserReports() {
         </SimpleGrid>
       </SimpleGrid>
       <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
-        <PieCard />
-        <AddJobModal />
+
         <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px'>
           {/* <Tasks /> */}
           <MiniCalendar h='100%' minW='100%' selectRange={false} />
