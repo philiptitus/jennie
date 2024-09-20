@@ -14,8 +14,13 @@ export default function Conversion(props: { [x: string]: any }) {
 
   const passed = user?.passed || 0;
   const failed = user?.failed || 0;
-  const remainder = 100 - (passed + failed);
-  const pieChartData = [passed, failed, remainder];
+
+  const total = passed + failed;
+  const passedPercentage = total ? (passed / total) * 100 : 0;
+  const failedPercentage = total ? (failed / total) * 100 : 0;
+  const remainder = 100 - (passedPercentage + failedPercentage);
+
+  const pieChartData = [passedPercentage, failedPercentage, remainder];
 
   // Chakra Color Mode
   const textColor = useColorModeValue('secondaryGray.900', 'white');
@@ -53,7 +58,7 @@ export default function Conversion(props: { [x: string]: any }) {
             </Text>
           </Flex>
           <Text fontSize='lg' color={textColor} fontWeight='700'>
-            {passed}
+            {passedPercentage.toFixed(2)}%
           </Text>
         </Flex>
         <VSeparator mx={{ base: '60px', xl: '60px', '2xl': '60px' }} />
@@ -65,7 +70,7 @@ export default function Conversion(props: { [x: string]: any }) {
             </Text>
           </Flex>
           <Text fontSize='lg' color={textColor} fontWeight='700'>
-            {failed}
+            {failedPercentage.toFixed(2)}%
           </Text>
         </Flex>
       </Card>

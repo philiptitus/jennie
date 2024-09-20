@@ -30,25 +30,28 @@ export default function CreatePreparationModal({ jobId }: CreatePreparationModal
   const dispatch = useDispatch();
 
   const preparationMaterialCreate = useSelector((state) => state.preparationMaterialCreate);
-  const { loading, error, success } = preparationMaterialCreate;
+  const { loading, error } = preparationMaterialCreate;
 
   const handleContinue = () => {
     dispatch(createPreparationMaterial(jobId));
-
   };
 
   useEffect(() => {
-    if (success) {
-      toast({
-        title: "Preparation Material Is being Created",
-        description: "Heads Up I will Notify you when your material is ready if you dont get a notification in 5 minutes come back and try again.",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      });
+    let timeoutId: NodeJS.Timeout;
 
-      onClose();
-      dispatch(resetPreparationMaterialCreate());
+    if (loading) {
+      timeoutId = setTimeout(() => {
+        if (!error) {
+          toast({
+            title: "Prep Material Is being Created",
+            description: "Heads Up I will Notify you when your material is ready if you don't get a notification in a minute come back and try again.",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+          onClose();
+        }
+      }, 5000);
     }
 
     if (error) {
@@ -60,9 +63,13 @@ export default function CreatePreparationModal({ jobId }: CreatePreparationModal
         isClosable: true,
       });
       dispatch(resetPreparationMaterialCreate());
-
+      clearTimeout(timeoutId);
     }
-  }, [success, error, toast, onClose, dispatch]);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [loading, error, toast, onClose, dispatch]);
 
   // Chakra Color Mode
   const textColor = useColorModeValue('secondaryGray.900', 'white');

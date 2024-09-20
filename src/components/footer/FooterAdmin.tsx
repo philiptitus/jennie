@@ -31,8 +31,10 @@ export default function Footer() {
 				<Link mx='3px' color={textColor} href='https://mrphilip.pythonanywhere.com/' target='_blank' fontWeight='700'>
 						Philip Titus
 					</Link>
-					 All Rights Reserved. Theme by Horizon UI.
-
+					 All Rights Reserved. Powered by the 
+					 <Link mx='3px' color="green" href='https://github.com/philiptitus/vectorapi' target='_blank' fontWeight='700'>
+					 Vector API.
+</Link>
 				</Text>
 			</Text>
 			<List display='flex'>
