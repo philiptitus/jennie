@@ -30,7 +30,7 @@ export default function StartSessionModal({ interviewId }: StartSessionModalProp
   const dispatch = useDispatch();
 
   const interviewRoomCreate = useSelector((state) => state.interviewRoomCreate);
-  const { loading, error, success } = interviewRoomCreate;
+  const { loading, error } = interviewRoomCreate;
 
   const handleContinue = () => {
     const roomData = {
@@ -41,17 +41,21 @@ export default function StartSessionModal({ interviewId }: StartSessionModalProp
   };
 
   useEffect(() => {
-    if (success) {
-      toast({
-        title: "Starting Interview Session",
-        description: `I am making the interview session for interview ID ${interviewId}. Please be patient; you will get a notification when it's ready, if oyu dont within 3 minutes try again`,
-        status: "info",
-        duration: 10000,
-        isClosable: true,
-      });
+    let timeoutId: NodeJS.Timeout;
 
-      onClose();
-      dispatch(resetCreateInterviewRoom());
+    if (loading) {
+      timeoutId = setTimeout(() => {
+        if (!error) {
+          toast({
+            title: "Starting Interview Session",
+            description: `I am making the interview session for interview ID ${interviewId}. Please be patient; you will get a notification when it's ready, if you don't within 3 minutes try again.`,
+            status: "info",
+            duration: 10000,
+            isClosable: true,
+          });
+          onClose();
+        }
+      }, 5000);
     }
 
     if (error) {
@@ -62,10 +66,14 @@ export default function StartSessionModal({ interviewId }: StartSessionModalProp
         duration: 5000,
         isClosable: true,
       });
-
       dispatch(resetCreateInterviewRoom());
+      clearTimeout(timeoutId);
     }
-  }, [success, error, toast, onClose, dispatch, interviewId]);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [loading, error, toast, onClose, dispatch, interviewId]);
 
   // Chakra Color Mode
   const textColor = useColorModeValue('secondaryGray.900', 'white');
@@ -117,3 +125,4 @@ export default function StartSessionModal({ interviewId }: StartSessionModalProp
     </>
   );
 }
+ 

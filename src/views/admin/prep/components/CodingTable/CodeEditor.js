@@ -83,13 +83,6 @@ export default function CodeEditorModal() {
   useEffect(() => {
     if (getCodeError) {
       setIsProcessing(false);
-      toast({
-        title: 'Error',
-        description: 'Server took too long to respond. 500 Internal Server Error',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
       dispatch(resetGetCode());
     }
   }, [getCodeError, dispatch, toast]);

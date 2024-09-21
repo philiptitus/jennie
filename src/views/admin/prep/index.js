@@ -19,23 +19,29 @@ export default function Settings() {
   const dispatch = useDispatch();
 
   const preparationMaterialMarking = useSelector((state) => state.preparationMaterialMarking);
-  const { loading, error, success } = preparationMaterialMarking;
+  const { loading, error } = preparationMaterialMarking;
 
   const [activeComponent, setActiveComponent] = useState('DevelopmentTable');
   const [showInstructionModal, setShowInstructionModal] = useState(true);  // State for the instruction modal
 
   useEffect(() => {
-    if (success) {
-      toast({
-        title: "Submission Successful",
-        description: "Your submission was a success. If you don't get your results notification within 5 minutes, please come back and submit again.",
-        status: "success",
-        duration: 9000,
-        isClosable: true,
-      });
-      dispatch(resetPreparationMaterialMarking());
-      onClose(); // Close the dialog after submission
+    let timeoutId: NodeJS.Timeout;
+
+    if (loading) {
+      timeoutId = setTimeout(() => {
+        if (!error) {
+          toast({
+            title: "Submission Successful",
+            description: "Your submission was a success. If you don't get your results notification within 5 minutes, please come back and submit again.",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+          });
+          onClose(); // Close the dialog after submission
+        }
+      }, 5000);
     }
+
     if (error) {
       toast({
         title: "Submission Failed",
@@ -45,8 +51,13 @@ export default function Settings() {
         isClosable: true,
       });
       dispatch(resetPreparationMaterialMarking());
+      clearTimeout(timeoutId);
     }
-  }, [success, error, dispatch, toast, onClose]);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [loading, error, dispatch, toast, onClose]);
 
   const handleSubmit = () => {
     dispatch(markPreparationMaterial(id));

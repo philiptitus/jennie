@@ -154,7 +154,7 @@ export default function InterviewTable() {
 
   useEffect(() => {
     dispatch(getUserInterviewList());
-    dispatch(checkSessionExpired());
+    // dispatch(checkSessionExpired());
 
 
     return () => {

@@ -6,9 +6,9 @@ import {
 } from '@tanstack/react-table';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchInterviewRoomDetails, resetFetchInterviewRoomDetails } from '../../../../server/actions/actions1';
+import { markInterviewRoom, resetInterviewRoomMarking } from '../../../../server/actions/actions2'; // Adjust the path as necessary
 import SessionHeader from './NativeInterview/SessionHeader';
 import InterviewContent from './NativeInterview/InterviewContent';
-import InterviewCompletionDialog from './NativeInterview/InterviewCompletionDialog';
 
 const columnHelper = createColumnHelper();
 
@@ -19,7 +19,6 @@ export default function NativeInterview(props) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState([]);
   const [questionType, setQuestionType] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
   const [allIds, setAllIds] = useState([]);
   const [allTypes, setAllTypes] = useState([]);
   const [fullQuestions, setFullQuestions] = useState([]); // New state for fullQuestions
@@ -28,8 +27,9 @@ export default function NativeInterview(props) {
   const dispatch = useDispatch();
   const toast = useToast();
 
-  const { loading, error, room } = useSelector(state => state.interviewRoomDetail);
+  const { loading: roomLoading, error: roomError, room } = useSelector(state => state.interviewRoomDetail);
   const { session } = useSelector(state => state.latestInterviewSession);
+  const { loading: markingLoading, error: markingError } = useSelector(state => state.interviewRoomMarking);
 
   useEffect(() => {
     if (session && session.id) {
@@ -74,15 +74,63 @@ export default function NativeInterview(props) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       setStartInterview(false);
-      setIsOpen(true);
       console.log('Interview finished');
+
+      if (session && session.id) {
+        dispatch(markInterviewRoom(session.id));
+      }
     }
   };
 
-  const handleClose = () => {
-    setIsOpen(false);
-    navigate('/admin/default');
-  };
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    if (markingLoading) {
+      timeoutId = setTimeout(() => {
+        if (!markingError) {
+          toast({
+            title: 'Success',
+            description: 'Interview response is being marked. Please check your notifications any moment from now for further updates and your email too.',
+            status: 'success',
+            duration: 10000,
+            isClosable: true,
+          });
+
+          setTimeout(() => {
+            navigate('/admin/default');
+          }, 2000);
+        }
+      }, 5000);
+    }
+
+    if (markingError) {
+      toast({
+        title: 'Error',
+        description: markingError,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      dispatch(resetInterviewRoomMarking());
+      clearTimeout(timeoutId);
+    }
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [markingLoading, markingError, dispatch, navigate, toast]);
+
+  useEffect(() => {
+    if (roomError) {
+      toast({
+        title: 'Error',
+        description: roomError,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [roomError, toast]);
 
   const columns = [
     columnHelper.accessor('name', {
@@ -112,19 +160,7 @@ export default function NativeInterview(props) {
     debugTable: true
   });
 
-  useEffect(() => {
-    if (error) {
-      toast({
-        title: 'Error',
-        description: error,
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  }, [error, toast]);
-
-  if (loading) {
+  if (roomLoading) {
     return <Spinner />;
   }
 
@@ -139,7 +175,7 @@ export default function NativeInterview(props) {
         handleStartInterview={handleStartInterview}
         handleNextQuestion={handleNextQuestion}
       />
-      <InterviewCompletionDialog isOpen={isOpen} cancelRef={cancelRef} handleClose={handleClose} id={session?.id}/>
+      {markingLoading && <Spinner size="xl" />}
     </Flex>
   );
 }
