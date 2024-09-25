@@ -10,6 +10,7 @@ import {
   updateInterviewCodingQuestion,
   resetInterviewCodingQuestionUpdate,
 } from '../../../../server/actions/actions2'; // Update the path to your actions
+import Analyze from 'views/admin/prep/components/Analyze';
 
 const SliderModal = ({
   isOpen,
@@ -122,6 +123,10 @@ const SliderModal = ({
         <Button colorScheme={buttonColorScheme} mr={3}>
           <CodeEditorModal/>
         </Button>
+
+        {/* <Button colorScheme={buttonColorScheme} mr={3}>
+          <Analyze/>
+        </Button> */}
       </Box>
     </Box>
   );

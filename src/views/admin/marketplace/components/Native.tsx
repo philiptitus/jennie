@@ -12,6 +12,7 @@ import Timer from './Native/ITimer';
 import SpeechRecognition from './Native/SpeechRecognition';
 import ExitModal from './Native/ExitModal';
 import CodeEditorModal from 'views/admin/prep/components/CodingTable/CodeEditor';
+import Analyze from 'views/admin/prep/components/Analyze';
 
 type InterviewQuestionNativeProps = {
   question: any;
@@ -60,14 +61,13 @@ const InterviewQuestionNative: React.FC<InterviewQuestionNativeProps> = ({ quest
 
   return (
     <Box style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      <Box flex="1" position="relative" bg="gray.800" overflow="hidden">
-        {showVideoPlayer ? (
-          <VideoPlayer isSpeaking={isSpeaking} />
-        ) : (
-          <Active />
-        )}
-        <Box position="absolute" bottom="20px" right="20px" display="flex" gap="10px">
-          <IconButton
+<Box style={{ position: 'fixed', top: '160px', right: '280px', zIndex: 1000 }}>
+  <Analyze />
+
+</Box>
+
+<Box  style = {{position:"fixed" ,top:"160px" ,right:"100px"  ,gap:"10px", zIndex: 1000}}>
+        <IconButton
             icon={<ChatIcon color="orange.500" />}
             onClick={toggleSlider}
             aria-label="Open Comment Slider"
@@ -96,6 +96,16 @@ const InterviewQuestionNative: React.FC<InterviewQuestionNativeProps> = ({ quest
             _hover={{ bg: 'gray.700' }}
           />
         </Box>
+
+
+
+      <Box  flex="1" position="relative" bg="gray.800" overflow="hidden">
+        {showVideoPlayer ? (
+          <VideoPlayer isSpeaking={isSpeaking} />
+        ) : (
+          <Active />
+        )}
+
       </Box>
       <SliderModal
         isOpen={isSliderOpen}

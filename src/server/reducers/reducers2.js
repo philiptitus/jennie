@@ -102,7 +102,8 @@ import {
     }
   };
   
-  // /api/v1/ask-agent/<int:session_id>/
+
+
   export const askAgentReducer = (state = { response: null }, action) => {
     switch (action.type) {
       case ASK_AGENT_REQUEST:
@@ -117,8 +118,6 @@ import {
         return state;
     }
   };
-  
-
 
 
 

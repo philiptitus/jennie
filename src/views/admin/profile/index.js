@@ -72,7 +72,7 @@ export default function Overview() {
       />
       <br />
 
-      <Upload
+      {/* <Upload
         gridArea={{
           base: '3 / 1 / 4 / 2',
           lg: '1 / 3 / 2 / 4',
@@ -80,7 +80,7 @@ export default function Overview() {
         minH={{ base: 'auto', lg: '420px', '2xl': '365px' }}
         pe="20px"
         pb={{ base: '100px', lg: '20px' }}
-      />
+      /> */}
       <br />
 
       <DeleteAccountCard />

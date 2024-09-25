@@ -3,7 +3,7 @@ import { Box, Button, Text, Input, Flex, IconButton, useColorModeValue, Spinner,
 import { CheckIcon, CloseIcon, RepeatIcon } from '@chakra-ui/icons';
 import TimerDisplay from './TimerDisplay'; // Import the TimerDisplay component
 import { useDispatch, useSelector } from 'react-redux';
-import { getAgent, askAgent, resetAskAgent, resetGetAgent } from '../../../../server/actions/actions2'; // Import the actions
+import { askAgent, resetAskAgent } from '../../../../server/actions/actions2'; // Import the actions
 import 'responsivevoice';
 
 const NativeAgent = ({
@@ -31,7 +31,6 @@ const NativeAgent = ({
   const { loading, error, room } = useSelector(state => state.interviewRoomDetail);
   const { session } = useSelector(state => state.latestInterviewSession);
   const { response, success, loading: agentLoading, error: agentError } = useSelector(state => state.askAgent);
-  const { loading: loadingGet, success: getSuccess, agent: agentResponse, error: getError } = useSelector(state => state.getAgent);
 
   const [aiResponse, setAiResponse] = useState('');
   const [displayedResponse, setDisplayedResponse] = useState('');
@@ -56,23 +55,18 @@ const NativeAgent = ({
 
     dispatch(askAgent(session.id, queryData));
     setIsProcessing(true);
-
-    setTimeout(() => {
-      dispatch(getAgent());
-    }, 10000);
   };
 
   useEffect(() => {
-    if (getSuccess && agentResponse) {
-      console.log(agentResponse);
-      setAiResponse(agentResponse.response);
+    if (success && response) {
+      setAiResponse(response.response);
       setDisplayedResponse('');
       setIsProcessing(false);
-    } else if (getError) {
+    } else if (agentError) {
       setIsProcessing(false);
       speak('Sorry, I am currently experiencing technical difficulties.');
     }
-  }, [getSuccess, agentResponse, getError]);
+  }, [success, response, agentError]);
 
   useEffect(() => {
     if (aiResponse) {
@@ -87,7 +81,7 @@ const NativeAgent = ({
       onstart: () => setIsSpeaking(true),
       onend: () => {
         setIsSpeaking(false);
-        dispatch(resetGetAgent()); // Dispatch resetGetAgent action after speaking ends
+        dispatch(resetAskAgent()); // Dispatch resetAskAgent action after speaking ends
       },
     });
   };

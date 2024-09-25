@@ -215,7 +215,6 @@ export const resetGetAgent = () => (dispatch) => {
   });
 };
 
-// Action for asking an agent
 export const askAgent = (sessionId, queryData) => async (dispatch, getState) => {
   try {
     dispatch({
@@ -252,6 +251,9 @@ export const askAgent = (sessionId, queryData) => async (dispatch, getState) => 
     });
   }
 };
+
+
+
 
 export const resetAskAgent = () => (dispatch) => {
   dispatch({
