@@ -208,7 +208,7 @@ const CodingTableRow = ({
             <Text mt='4'>Attempted: {row.original.attempted ? 'Yes' : 'No'}</Text>
             <Text mt='2'>Score: {row.original.score}%</Text>
 
-            <CodeEditorModal/>
+            {/* <CodeEditorModal/> */}
           </Box>
         </Td>
       </Tr>

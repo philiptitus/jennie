@@ -1,10 +1,12 @@
-import { Box, Card, Flex, Table, Tbody, Td, Text, Th, Thead, Tr, useColorModeValue, useToast, Progress } from '@chakra-ui/react';
+import { Box, Card, Flex, Table, Tbody, Td, Text, Th, Thead, Tr, useColorModeValue, useToast, Progress, Tooltip, IconButton } from '@chakra-ui/react';
 import { createColumnHelper, flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 import React, { useState, useMemo, useEffect } from 'react';
 import ComplexTableHeader from './DevelopmentTable/ComplexTableHeader';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPreparationMaterialDetail, resetPreparationMaterialDetail } from 'server/actions/actions1'; // Update the path accordingly
 import CodingTableRow from './CodingTable/CodingTableRow';
+import CodeEditorModal from './CodingTable/CodeEditor';
+import { FaCode } from 'react-icons/fa';
 
 const columnHelper = createColumnHelper();
 
@@ -15,6 +17,7 @@ export default function CodingTable({ materialId }) {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState({});
   const [viewedAnswer, setViewedAnswer] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const toast = useToast();
 
   const dispatch = useDispatch();
@@ -191,6 +194,26 @@ export default function CodingTable({ materialId }) {
             ))}
           </Tbody>
         </Table>
+      </Box>
+
+      {/* Fixed Code Editor Button with Tooltip */}
+      <Tooltip label='Open Code Editor' placement='left'>
+        <IconButton
+          icon={<FaCode />}
+          position='fixed'
+          top='20px'
+          right='20px'
+          onClick={() => setIsModalOpen(true)}
+        />
+      </Tooltip>
+
+      {/* Code Editor Modal */}
+      <Box position='fixed' top='120px' right='20px' zIndex='1000'>
+        <CodeEditorModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onOpen={() => setIsModalOpen(true)}
+        />
       </Box>
     </Card>
   );

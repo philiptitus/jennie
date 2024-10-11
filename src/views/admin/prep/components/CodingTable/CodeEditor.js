@@ -22,6 +22,7 @@ import {
   HStack,
   Badge,
   Collapse,
+  Tooltip
 } from '@chakra-ui/react';
 import { ChevronRightIcon, ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import languages from './languages'; // Import the languages list
@@ -137,12 +138,16 @@ export default function CodeEditorModal() {
         </Box>
         <HStack justify="space-between" align="center">
           <Text fontWeight="bold">Additional Info:</Text>
+          <Tooltip label="Code Editor" placement="left">
+
           <IconButton
             icon={isCollapsed ? <ChevronDownIcon /> : <ChevronUpIcon />}
             onClick={() => setIsCollapsed(!isCollapsed)}
             aria-label="Toggle additional info"
             size="sm"
           />
+          </Tooltip>
+
         </HStack>
         <Collapse in={!isCollapsed} animateOpacity>
           <VStack align="stretch" spacing={4}>

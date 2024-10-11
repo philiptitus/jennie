@@ -45,7 +45,8 @@ export default function UserReports() {
 
   const userLogin = useSelector((state) => state.userLogin);
   const { error, loading, userInfo, success } = userLogin;
-
+  const jobCreate = useSelector((state) => state.jobCreate);
+  const { loading: createLoading, error: createError, success: createSuccess } = jobCreate;
   const userDetails = useSelector((state) => state.userDetails);
   const { loading: userDetailsLoading, error: userDetailsError, user } = userDetails;
 
@@ -59,7 +60,10 @@ export default function UserReports() {
     } else {
       dispatch(getUserDetails());
     }
-  }, [userInfo, navigate, dispatch]);
+    if (createSuccess) {
+      dispatch(getUserDetails());
+    }
+  }, [userInfo, navigate, dispatch ,createSuccess]);
 
   useEffect(() => {
     if (userDetailsError) {
