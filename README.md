@@ -8,7 +8,7 @@
 
 <p>&nbsp;</p>
 
-[<img alt="Horizon UI TypeScript" src="https://i.ibb.co/KV6FDvK/introduction-image-ts.png" /> ](https://github.com/horizon-ui/horizon-ui-chakra-ts)
+[<img alt="Horizon UI TypeScript" src="https://izpkijnmscmbolveusoo.supabase.co/storage/v1/object/public/Galleria/uploads/Screenshot%202024-10-11%20205612.png" /> ](https://github.com/horizon-ui/horizon-ui-chakra-ts)
 
 <p>&nbsp;</p>
 
@@ -63,40 +63,6 @@ Then start your local server by running:
 npm start
 ```
 
-### Example Pages
 
-For inspiration or to demonstrate Jennie’s capabilities to others, you can jumpstart your development with our pre-built example pages. Quickly set up the basic structure for your project by viewing the <a href="https://horizon-ui.com/horizon-ui-chakra-ts/?ref=readme-horizon-ts" target="_blank">example pages here.</a>
 
-### Versions
-
-| Free Version                                                                                                       | PRO Version                                                                                                               |
-| ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| [![Horizon UI](https://i.ibb.co/KV6FDvK/introduction-image-ts.png)](https://www.horizon-ui.com/?ref=readme-horizon-ts) | [![Horizon UI PRO](https://i.ibb.co/R6jFKRM/introduction-image-1.png)](https://www.horizon-ui.com/pro?ref=readme-horizon-ts) |
-
-### Figma Version
-
-Jennie’s interface is also available in Figma format! Explore and customize the design on Figma Community. 🎨
-[See the Horizon UI Figma design files](https://bit.ly/horizon-figma)
-
-### Reporting Issues
-
-We use GitHub Issues as the official bug tracker for Jennie. Here are some tips for reporting issues:
-
-1. Ensure you are using the latest version of Jennie. Check the CHANGELOG in the [CHANGE LOG File](https://github.com/horizon-ui/horizon-ui-chakra-ts/blob/main/CHANGELOG.md?ref=readme-horizon-ts).
-2. Provide reproducible steps for the issue to help us resolve it faster.
-3. Some issues may be browser-specific, so mentioning the browser where the issue occurred can be helpful.
-
----
-
-### Community
-
-Connect with the community! Feel free to ask questions, report issues, and meet new people using Jennie!
-
-💬 [Join the #HorizonUI Discord Community!](https://discord.gg/f6tEKFBd4m)
-
-### Copyright and license
-
-⭐️ [Copyright 2022 Simmmple](https://www.simmmple.com/?ref=readme-horizon-ts)
-
-📄 [Horizon UI License](https://www.simmmple.com/licenses?ref=readme-horizon-ts)
 
