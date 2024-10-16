@@ -18,7 +18,7 @@ const LoginButton = () => {
     justifyContent: 'center',
     width: '250px',
     height: '50px',
-    backgroundColor: '#FF9900', // AWS orange
+    // backgroundColor: '#FF9900', // AWS orange
     border: 'none',
     borderRadius: '8px',
     color: '#fff',
