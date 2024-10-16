@@ -23,6 +23,7 @@ import DefaultAuth from "layouts/auth/Default";
 import illustration from "assets/img/auth/auth.png";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "server/actions/userAction"; // Update the path accordingly
+import LoginButton from "../aws/LoginButton";
 
 function SignIn() {
   // Chakra color mode
@@ -208,6 +209,7 @@ function SignIn() {
               isLoading={loading}>
               {loading ? <Spinner /> : "Sign In"}
             </Button>
+            <LoginButton/>
           </FormControl>
           <Flex
             flexDirection='column'

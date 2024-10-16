@@ -3,6 +3,11 @@ import {
     USER_LOGIN_REQUEST,
     USER_LOGIN_SUCCESS,
 
+    COGNITO_LOGIN_FAIL,
+    COGNITO_LOGIN_REQUEST,
+    COGNITO_LOGIN_SUCCESS,
+
+
     USER_REGISTER_FAIL,
     USER_REGISTER_REQUEST,
     USER_REGISTER_SUCCESS,
@@ -135,6 +140,30 @@ export const userLoginReducer = (state = {}, action) =>{
         
     }
 } 
+
+
+
+
+
+
+
+export const cognitoLoginReducer = (state = {}, action) =>{
+    switch (action.type) {
+        case COGNITO_LOGIN_REQUEST:
+            return { loading: true } 
+        case COGNITO_LOGIN_SUCCESS:
+            return { loading: false, userInfo: action.payload }     
+        case COGNITO_LOGIN_FAIL:
+            return { loading: false, error:action.payload }
+
+            
+        default:
+            return state
+    
+        
+    }
+} 
+
 
 
 export const userRegisterReducer = (state = {}, action) =>{

@@ -62,6 +62,14 @@ import {
 
 
 
+
+    
+    COGNITO_LOGIN_FAIL,
+    COGNITO_LOGIN_REQUEST,
+    COGNITO_LOGIN_SUCCESS,
+
+
+
 } from '../constants/userConstants'
 import axios from 'axios'
 
@@ -276,6 +284,47 @@ export const login = (email, password) => async(dispatch) => {
         })
     }
 }
+
+
+
+
+
+export const cognitologin = (auth_code) => async(dispatch) => {
+    try{
+        dispatch({
+            type: COGNITO_LOGIN_REQUEST
+
+        })
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }
+
+        const { data } = await axios.post(
+            `${API_URL}/api/users/cognito/`,
+            { 'auth_code': auth_code },
+            config
+        )
+        dispatch({
+            type: COGNITO_LOGIN_SUCCESS,
+            payload:data
+        })
+
+        localStorage.setItem('userInfo', JSON.stringify(data))
+
+
+    } catch (error) {
+        dispatch({
+            type: COGNITO_LOGIN_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
 
 
 export const logout = () => (dispatch) => {

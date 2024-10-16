@@ -14,6 +14,7 @@ import * as reducers2 from './reducers/reducers2';
 const reducer = combineReducers({
     // User-related reducers
     userLogin: userReducers.userLoginReducer,
+    cognitoLogin: userReducers.cognitoLoginReducer,
     userRegister: userReducers.userRegisterReducer,
     userDetails: userReducers.userDetailsReducer,
     userUpdateProfile: userReducers.userUpdateProfileReducer,

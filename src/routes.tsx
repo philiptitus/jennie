@@ -27,6 +27,7 @@ import SignUpCentered from 'views/auth/signUp';
 import ForgotCentered from 'views/auth/forgotPassword';
 import ResetCentered from 'views/auth/resetPassword';
 import NotFoundCentered from 'views/auth/notFound';
+import Callback from 'views/auth/aws/Callback';
 
 
 
@@ -108,6 +109,14 @@ const routes = [
     path: '/404',
     icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,
     component: <NotFoundCentered/>,
+  },
+
+  {
+    name: 'Callback',
+    layout: '/auth',
+    path: '/callback',
+    icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,
+    component: <Callback/>,
   },
   // {
   //   name: 'RTL Admin',
