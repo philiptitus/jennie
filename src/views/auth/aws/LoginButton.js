@@ -21,7 +21,7 @@ const LoginButton = () => {
     // backgroundColor: '#FF9900', // AWS orange
     border: 'none',
     borderRadius: '8px',
-    color: '#fff',
+    // color: '#fff',
     fontSize: '16px',
     fontWeight: 'bold',
     cursor: 'pointer',
