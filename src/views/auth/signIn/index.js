@@ -77,7 +77,7 @@ function SignIn() {
     }
 
     if (cognitoInfo) {
-      navigate("/admin/default");
+      window.location.reload();
     }
 
     if (error) {
