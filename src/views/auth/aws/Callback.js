@@ -22,7 +22,7 @@ const Callback = () => {
     }
   }, [location, dispatch]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (userInfo) {
       toast({
         title: "Welcome Back!",
