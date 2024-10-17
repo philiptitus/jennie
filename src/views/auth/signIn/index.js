@@ -41,6 +41,10 @@ function SignIn() {
 
   const userLogin = useSelector((state) => state.userLogin);
   const { error, loading, userInfo, success } = userLogin;
+
+  const cognitoLogin = useSelector((state) => state.cognitoLogin);
+  const {  userInfo:cognitoInfo } = cognitoLogin;
+
   const handleClick = () => setShow(!show);
 
   const handleSubmit = () => {
@@ -69,6 +73,10 @@ function SignIn() {
         duration: 5000,
         isClosable: true,
       });
+      navigate("/admin/default");
+    }
+
+    if (cognitoInfo) {
       navigate("/admin/default");
     }
 
