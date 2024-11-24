@@ -454,7 +454,7 @@ export const resetPreparationMaterialList = () => (dispatch) => {
 export const createInterview = (interviewData) => async (dispatch, getState) => {
   try {
     dispatch({
-      type: INTERVIEW_CREATE_REQUEST
+      type: INTERVIEW_CREATE_REQUEST,
     });
 
     const {
@@ -464,8 +464,8 @@ export const createInterview = (interviewData) => async (dispatch, getState) => 
     const config = {
       headers: {
         'Content-type': 'application/json',
-        Authorization: `Bearer ${userInfo.token}`
-      }
+        Authorization: `Bearer ${userInfo.token}`,
+      },
     };
 
     const { data } = await axios.post(
@@ -479,12 +479,23 @@ export const createInterview = (interviewData) => async (dispatch, getState) => 
       payload: data,
     });
   } catch (error) {
-    dispatch({
-      type: INTERVIEW_CREATE_FAIL,
-      payload: error.response && error.response.data.detail
-        ? error.response.data.detail
-        : error.message,
-    });
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      error.response.data.redirect_url
+    ) {
+      dispatch({
+        type: 'INTERVIEW_CREATE_AUTH_REQUIRED',
+        payload: error.response.data.redirect_url, // Save redirect URL
+      });
+    } else {
+      dispatch({
+        type: INTERVIEW_CREATE_FAIL,
+        payload: error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+      });
+    }
   }
 };
 

@@ -240,14 +240,14 @@ export const jobUpdateReducer = (state = { job: null }, action) => {
         return { loading: false, interview: action.payload, success: true };
       case INTERVIEW_CREATE_FAIL:
         return { loading: false, error: action.payload };
+      case 'INTERVIEW_CREATE_AUTH_REQUIRED':
+        return { loading: false, redirectUrl: action.payload, authRequired: true };
       case INTERVIEW_CREATE_RESET:
         return { interview: null };
       default:
         return state;
     }
   };
-
-
 
 
   // /api/v1/interviews/<int:pk>/

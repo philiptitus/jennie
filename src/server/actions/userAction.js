@@ -67,6 +67,9 @@ import {
     COGNITO_LOGIN_FAIL,
     COGNITO_LOGIN_REQUEST,
     COGNITO_LOGIN_SUCCESS,
+    GOOGLE_AUTH_FAIL,
+    GOOGLE_AUTH_REQUEST,
+    GOOGLE_AUTH_SUCCESS,
 
 
 
@@ -324,6 +327,53 @@ export const cognitologin = (auth_code) => async(dispatch) => {
         })
     }
 }
+
+
+
+export const googleauth = (auth_code) => async(dispatch, getState) => {
+    try{
+        dispatch({
+            type: GOOGLE_AUTH_REQUEST
+
+        })
+
+
+        const {
+
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization : `Bearer ${userInfo.token}`
+
+            }
+        }
+
+        const { data } = await axios.post(
+            `${API_URL}/api/users/google/`,
+            { 'auth_code': auth_code },
+            config
+        )
+        dispatch({
+            type: GOOGLE_AUTH_SUCCESS,
+            payload:data
+        })
+
+
+
+    } catch (error) {
+        dispatch({
+            type: GOOGLE_AUTH_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+
 
 
 

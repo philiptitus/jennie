@@ -15,6 +15,8 @@ const reducer = combineReducers({
     // User-related reducers
     userLogin: userReducers.userLoginReducer,
     cognitoLogin: userReducers.cognitoLoginReducer,
+    googleAuth: userReducers.googleAuthReducer,
+
     userRegister: userReducers.userRegisterReducer,
     userDetails: userReducers.userDetailsReducer,
     userUpdateProfile: userReducers.userUpdateProfileReducer,
