@@ -62,6 +62,17 @@ import {
 	const handleLogout = () => {
 	  dispatch(logout());
 	};
+
+	const clientId = '6pul2opu2dt6i086o3deg4nis9'; // Replace with your Cognito App Client ID
+	const redirectUri = encodeURIComponent('https://jennie-steel.vercel.app/auth/callback'); // Always use encodeURIComponent
+	const cognitoDomain = 'https://philip.auth.eu-north-1.amazoncognito.com'; // Your Cognito domain
+  
+	const cognitoLoginUrl = `https://philip.auth.eu-north-1.amazoncognito.com/login?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+  
+	// Redirect the user to Cognito's Hosted UI
+
+
+
   
 	useEffect(() => {
 	  if (error) {
@@ -81,8 +92,8 @@ import {
 		  duration: 5000,
 		  isClosable: true,
 		});
-		navigate('/auth/sign-in'); // Redirect to the sign-in page
-	  }
+		window.location.href = cognitoLoginUrl;
+	}
 	}, [error, userInfo, navigate, toast]);
   
 	useEffect(() => {
