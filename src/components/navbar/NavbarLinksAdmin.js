@@ -42,7 +42,8 @@ import {
 	// Assuming you have a loading and error state in your redux store
 	const { loading, error, userInfo } = useSelector((state: RootState) => state.userLogin);
 	const { notifications } = useSelector((state: RootState) => state.notificationList);
-  
+    const cognitoLogin = useSelector((state) => state.cognitoLogin);
+	const {  userInfo:cognitoInfo } = cognitoLogin;
 	const filteredRoutes = routes.filter(route => route.layout !== '/auth' && route.path !== '/proom');
   
 	// Chakra Color Mode
@@ -83,6 +84,10 @@ import {
 		  duration: 5000,
 		  isClosable: true,
 		});
+	  }
+	  
+	  if (cognitoInfo) {
+		window.location.reload();
 	  }
 	  if (!userInfo) {
 		toast({
