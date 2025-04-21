@@ -45,14 +45,20 @@ export default function Overview() {
     return selectedSVG;
   };
 
+  const cognitoInfo = useSelector((state) => state.cognitoInfo);
+
   useEffect(() => {
     if (!userInfo) {
-      navigate(cognitoLoginUrl);
+      if (cognitoInfo) {
+        window.location.reload();
+      } else {
+        navigate(cognitoLoginUrl);
+      }
     } else {
       const svg = randomSVG();
       setAvatar(svg); // Set the correct SVG path as the avatar
     }
-  }, [userInfo, navigate]);
+  }, [userInfo, navigate, cognitoInfo, cognitoLoginUrl]);
 
   return (
     <Box pt={{ base: '130px', md: '130px', xl: '130px', l: '130px' }}>

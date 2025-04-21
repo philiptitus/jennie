@@ -48,6 +48,9 @@ function ForgotPassword() {
   const forgotPasswordState = useSelector((state) => state.forgotPassword);
   const { error, loading, success } = forgotPasswordState;
 
+  const cognitoLogin = useSelector((state) => state.cognitoLogin);
+  const { userInfo: cognitoInfo } = cognitoLogin;
+
   // Handle form submission
   const handleSubmit = () => {
     dispatch(forgot_password(email));
@@ -62,7 +65,11 @@ function ForgotPassword() {
         duration: 5000,
         isClosable: true,
       });
-      navigate(cognitoLoginUrl); // Redirect to the sign-in page
+      if (cognitoInfo) {
+        window.location.reload();
+      } else {
+        navigate(cognitoLoginUrl); // Redirect to the sign-in page
+      }
     }
 
     if (error) {
@@ -74,7 +81,7 @@ function ForgotPassword() {
         isClosable: true,
       });
     }
-  }, [success, error, navigate, toast]);
+  }, [success, error, navigate, toast, cognitoInfo, cognitoLoginUrl]);
 
   return (
     <DefaultAuth illustrationBackground={illustration} image={illustration}>
@@ -156,15 +163,18 @@ function ForgotPassword() {
             mt='0px'>
             <Text color={textColorSecondary} fontWeight='400' fontSize='14px'>
               Remember your password?
-              <NavLink to={cognitoLoginUrl}>
-                <Text
-                  color={textColorBrand}
-                  as='span'
-                  ms='5px'
-                  fontWeight='500'>
-                  Sign In
-                </Text>
-              </NavLink>
+              <span
+                style={{ color: textColorBrand, cursor: 'pointer', marginLeft: '5px', fontWeight: 500 }}
+                onClick={() => {
+                  if (cognitoInfo) {
+                    window.location.reload();
+                  } else {
+                    window.location.href = cognitoLoginUrl;
+                  }
+                }}
+              >
+                Sign In
+              </span>
             </Text>
           </Flex>
         </Flex>

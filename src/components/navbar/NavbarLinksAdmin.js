@@ -97,9 +97,15 @@ import {
 		  duration: 5000,
 		  isClosable: true,
 		});
-		window.location.href = cognitoLoginUrl;
-	}
-	}, [error, userInfo, navigate, toast]);
+		setTimeout(() => {
+		  if (cognitoInfo) {
+			window.location.reload();
+		  } else {
+			window.location.href = cognitoLoginUrl;
+		  }
+		}, 1000);
+	  }
+	}, [error, userInfo, navigate, toast, cognitoInfo, cognitoLoginUrl]);
   
 	useEffect(() => {
 	  const interval = setInterval(() => {

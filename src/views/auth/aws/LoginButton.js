@@ -1,17 +1,23 @@
 import React from 'react';
-
-const redirectToCognito = () => {
-  const clientId = '6pul2opu2dt6i086o3deg4nis9'; // Replace with your Cognito App Client ID
-  const redirectUri = encodeURIComponent('https://jennie-steel.vercel.app/auth/callback'); // Always use encodeURIComponent
-  const cognitoDomain = 'https://philip.auth.eu-north-1.amazoncognito.com'; // Your Cognito domain
-
-  const cognitoLoginUrl = `https://philip.auth.eu-north-1.amazoncognito.com/login?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
-
-  // Redirect the user to Cognito's Hosted UI
-  window.location.href = cognitoLoginUrl;
-};
+import { useSelector } from 'react-redux';
 
 const LoginButton = () => {
+  const cognitoLogin = useSelector((state) => state.cognitoLogin);
+  const { userInfo: cognitoInfo } = cognitoLogin;
+
+  const clientId = '6pul2opu2dt6i086o3deg4nis9';
+  const redirectUri = encodeURIComponent('https://jennie-steel.vercel.app/auth/callback');
+  const cognitoDomain = 'https://philip.auth.eu-north-1.amazoncognito.com';
+  const cognitoLoginUrl = `https://philip.auth.eu-north-1.amazoncognito.com/login?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+
+  const handleLogin = () => {
+    if (cognitoInfo) {
+      window.location.reload();
+    } else {
+      window.location.href = cognitoLoginUrl;
+    }
+  };
+
   const buttonStyles = {
     display: 'flex',
     alignItems: 'center',
@@ -38,7 +44,7 @@ const LoginButton = () => {
 
   return (
     <button
-      onClick={redirectToCognito}
+      onClick={handleLogin}
       style={buttonStyles}
       onMouseOver={(e) => (e.currentTarget.style.filter = buttonHover.filter)}
       onMouseOut={(e) => (e.currentTarget.style.filter = 'none')}

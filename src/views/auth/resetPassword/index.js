@@ -43,12 +43,15 @@ function ResetPassword() {
   const resetPassword = useSelector((state) => state.resetPassword);
   const { error, loading, success } = resetPassword;
 
-	const clientId = '6pul2opu2dt6i086o3deg4nis9'; // Replace with your Cognito App Client ID
-	const redirectUri = encodeURIComponent('https://jennie-steel.vercel.app/auth/callback'); // Always use encodeURIComponent
-	const cognitoDomain = 'https://philip.auth.eu-north-1.amazoncognito.com'; // Your Cognito domain
+  const clientId = '6pul2opu2dt6i086o3deg4nis9'; // Replace with your Cognito App Client ID
+  const redirectUri = encodeURIComponent('https://jennie-steel.vercel.app/auth/callback'); // Always use encodeURIComponent
+  const cognitoDomain = 'https://philip.auth.eu-north-1.amazoncognito.com'; // Your Cognito domain
   
-	const cognitoLoginUrl = `https://philip.auth.eu-north-1.amazoncognito.com/login?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+  const cognitoLoginUrl = `https://philip.auth.eu-north-1.amazoncognito.com/login?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
   
+  const cognitoLogin = useSelector((state) => state.cognitoLogin);
+  const { userInfo: cognitoInfo } = cognitoLogin;
+
   const handlePasswordClick = () => setShowPassword(!showPassword);
   const handleConfirmPasswordClick = () => setShowConfirmPassword(!showConfirmPassword);
 
@@ -82,14 +85,18 @@ function ResetPassword() {
   useEffect(() => {
     if (success) {
       toast({
-        title: "Password changed successfully.",
-        description: "You can now sign in with your new password.",
+        title: "Success",
+        description: "Password reset successful! Redirecting to sign in...",
         status: "success",
         duration: 5000,
         isClosable: true,
       });
       setTimeout(() => {
-        navigate(cognitoLoginUrl);
+        if (cognitoInfo) {
+          window.location.reload();
+        } else {
+          navigate(cognitoLoginUrl);
+        }
       }, 5000);
     }
 
@@ -102,7 +109,7 @@ function ResetPassword() {
         isClosable: true,
       });
     }
-  }, [success, error, navigate, toast]);
+  }, [success, error, navigate, toast, cognitoInfo, cognitoLoginUrl]);
 
   return (
     <DefaultAuth illustrationBackground={illustration} image={illustration}>
@@ -246,16 +253,18 @@ function ResetPassword() {
         >
           <Text color={textColorDetails} fontWeight="400" fontSize="14px">
             Remembered your password?
-            <NavLink to={cognitoLoginUrl}>
-              <Text
-                color={textColorBrand}
-                as="span"
-                ms="5px"
-                fontWeight="500"
-              >
-                Sign In
-              </Text>
-            </NavLink>
+            <span
+              style={{ color: textColorBrand, cursor: 'pointer', marginLeft: '5px', fontWeight: 500 }}
+              onClick={() => {
+                if (cognitoInfo) {
+                  window.location.reload();
+                } else {
+                  window.location.href = cognitoLoginUrl;
+                }
+              }}
+            >
+              Sign In
+            </span>
           </Text>
         </Flex>
       </Flex>

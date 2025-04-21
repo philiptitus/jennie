@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -43,14 +43,17 @@ function SignUp() {
   const toast = useToast();
   const dispatch = useDispatch();
 
-	const clientId = '6pul2opu2dt6i086o3deg4nis9'; // Replace with your Cognito App Client ID
-	const redirectUri = encodeURIComponent('https://jennie-steel.vercel.app/auth/callback'); // Always use encodeURIComponent
-	const cognitoDomain = 'https://philip.auth.eu-north-1.amazoncognito.com'; // Your Cognito domain
+  const clientId = '6pul2opu2dt6i086o3deg4nis9'; // Replace with your Cognito App Client ID
+  const redirectUri = encodeURIComponent('https://jennie-steel.vercel.app/auth/callback'); // Always use encodeURIComponent
+  const cognitoDomain = 'https://philip.auth.eu-north-1.amazoncognito.com'; // Your Cognito domain
   
-	const cognitoLoginUrl = `https://philip.auth.eu-north-1.amazoncognito.com/login?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+  const cognitoLoginUrl = `https://philip.auth.eu-north-1.amazoncognito.com/login?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
   
   const userRegister = useSelector((state) => state.userRegister);
   const { error, loading, userInfo, success } = userRegister;
+
+  const cognitoLogin = useSelector((state) => state.cognitoLogin);
+  const { userInfo: cognitoInfo } = cognitoLogin;
 
   const handleClickPassword = () => setShowPassword(!showPassword);
   const handleClickConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
@@ -92,7 +95,11 @@ function SignUp() {
         duration: 5000,
         isClosable: true,
       });
-      navigate(cognitoLoginUrl); // Redirect to the sign-in page
+      if (cognitoInfo) {
+        window.location.reload();
+      } else {
+        window.location.href = cognitoLoginUrl;
+      }
     }
 
     if (error) {
@@ -104,7 +111,7 @@ function SignUp() {
         isClosable: true,
       });
     }
-  }, [userInfo, error, navigate, toast]);
+  }, [userInfo, error, toast, cognitoInfo, cognitoLoginUrl]);
 
   return (
     <DefaultAuth illustrationBackground={illustration} image={illustration}>
@@ -267,15 +274,14 @@ function SignUp() {
             mt='0px'>
             <Text color={textColorDetails} fontWeight='400' fontSize='14px'>
               Already have an account?
-              <NavLink to={cognitoLoginUrl}>
-                <Text
-                  color={textColorBrand}
-                  as='span'
-                  ms='5px'
-                  fontWeight='500'>
-                  Sign In
-                </Text>
-              </NavLink>
+              <Button
+                color={textColorBrand}
+                as='span'
+                ms='5px'
+                fontWeight='500'
+                onClick={() => window.location.href = cognitoLoginUrl}>
+                Sign In
+              </Button>
             </Text>
           </Flex>
         </Flex>

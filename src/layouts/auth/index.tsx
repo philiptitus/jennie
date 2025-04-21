@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import routes from 'routes';
+import { useSelector } from 'react-redux';
 
 // Chakra imports
 import { Box, useColorModeValue } from '@chakra-ui/react';
@@ -60,7 +61,15 @@ export default function Auth() {
                 {getRoutes(routes)}
                 <Route
                   path="/"
-                  element={<Navigate to={cognitoLoginUrl} replace />}
+                  element={(() => {
+                    const cognitoInfo = useSelector((state: any) => state.cognitoLogin?.userInfo);
+                    if (cognitoInfo) {
+                      window.location.reload();
+                      return null;
+                    } else {
+                      return <Navigate to={cognitoLoginUrl} replace />;
+                    }
+                  })()}
                 />
                 <Route
                   path="*"

@@ -62,14 +62,18 @@ export default function UserReports() {
 
   useEffect(() => {
     if (!userInfo) {
-      navigate(cognitoLoginUrl);
+      if (cognitoInfo) {
+        window.location.reload();
+      } else {
+        navigate(cognitoLoginUrl);
+      }
     } else {
       dispatch(getUserDetails());
     }
     if (createSuccess) {
       dispatch(getUserDetails());
     }
-  }, [userInfo, navigate, dispatch ,createSuccess]);
+  }, [userInfo, navigate, dispatch, createSuccess, cognitoInfo, cognitoLoginUrl]);
 
   useEffect(() => {
     if (userDetailsError) {
