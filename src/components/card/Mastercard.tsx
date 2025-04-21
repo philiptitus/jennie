@@ -5,7 +5,6 @@ import Card from 'components/card/Card';
 
 // Assets
 import bgMastercard from 'assets/img/dashboards/Debit.png';
-import { RiMastercardFill } from 'react-icons/ri';
 
 export default function Banner(props: { exp: string; cvv: string; number: string }) {
 	const { exp, cvv, number, ...rest } = props;
@@ -27,7 +26,9 @@ export default function Banner(props: { exp: string; cvv: string; number: string
 					<Text fontSize='2xl' fontWeight='bold'>
 						Glassy.
 					</Text>
-					<Icon as={RiMastercardFill} w='48px' h='auto' color='gray.400' />
+					<span style={{ display: 'flex', alignItems: 'center' }}>
+						<svg width="48" height="48" fill="#A0AEC0" viewBox="0 0 24 24"><circle cx="9" cy="12" r="5"/><circle cx="15" cy="12" r="5"/></svg>
+					</span>
 				</Flex>
 				<Spacer />
 				<Flex direction='column'>

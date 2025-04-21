@@ -15,6 +15,12 @@ export default function DeleteAccountCard() {
   const accountDelete = useSelector((state) => state.accountDelete);
   const { error, loading, success } = accountDelete;
 
+	const clientId = '6pul2opu2dt6i086o3deg4nis9'; // Replace with your Cognito App Client ID
+	const redirectUri = encodeURIComponent('https://jennie-steel.vercel.app/auth/callback'); // Always use encodeURIComponent
+	const cognitoDomain = 'https://philip.auth.eu-north-1.amazoncognito.com'; // Your Cognito domain
+  
+	const cognitoLoginUrl = `https://philip.auth.eu-north-1.amazoncognito.com/login?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+  
   const handleDelete = () => {
     dispatch(deleteAccount());
   };
@@ -28,7 +34,7 @@ export default function DeleteAccountCard() {
         duration: 5000,
         isClosable: true,
       });
-      navigate("/auth/sign-in"); // Redirect to the sign-in page
+      navigate(cognitoLoginUrl); // Redirect to the sign-in page
       dispatch(resetAccountDelete()); // Reset the state
     }
 

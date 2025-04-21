@@ -1,4 +1,4 @@
-import { Box, Flex, Icon, Progress, Table, Tbody, Td, Text, Th, Thead, Tr, useColorModeValue } from '@chakra-ui/react';
+import { Box, Flex, Progress, Table, Tbody, Td, Text, Th, Thead, Tr, useColorModeValue } from '@chakra-ui/react';
 import {
 	createColumnHelper,
 	flexRender,
@@ -12,8 +12,6 @@ import Card from 'components/card/Card';
 import Menu from 'components/menu/MainMenu';
 import * as React from 'react';
 // Assets
-import { MdCancel, MdCheckCircle, MdOutlineError } from 'react-icons/md';
-
 
 
 type RowObj = {
@@ -65,29 +63,19 @@ export default function ComplexTable(props: { tableData: any }) {
 			),
 			cell: (info) => (
 			<Flex align='center'>
-				<Icon
-					w='24px'
-					h='24px'
-					me='5px'
-					color={
-						info.getValue() === 'Approved' ? (
-							'green.500'
-						) : info.getValue() === 'Disable' ? (
-							'red.500'
-						) : info.getValue() === 'Error' ? (
-							'orange.500'
-						) : null
-					}
-					as={
-						info.getValue() === 'Approved' ? (
-							MdCheckCircle
-						) : info.getValue() === 'Disable' ? (
-							MdCancel
-						) : info.getValue() === 'Error' ? (
-							MdOutlineError
-						) : null
-					}
-				/>
+				{info.getValue() === 'Approved' ? (
+					<span style={{ display: 'flex', alignItems: 'center', marginRight: '5px' }}>
+						<svg width="24" height="24" fill="green" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.59L6.41 13 5 14.41 10 19.41 19 10.41 17.59 9l-7.59 7.59z"/></svg>
+					</span>
+				) : info.getValue() === 'Disable' ? (
+					<span style={{ display: 'flex', alignItems: 'center', marginRight: '5px' }}>
+						<svg width="24" height="24" fill="red" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 13.59L13.59 17 12 15.41 10.41 17 7 13.59 8.41 12 12 15.59 15.59 12 17 13.59z"/></svg>
+					</span>
+				) : info.getValue() === 'Error' ? (
+					<span style={{ display: 'flex', alignItems: 'center', marginRight: '5px' }}>
+						<svg width="24" height="24" fill="orange" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+					</span>
+				) : null}
 				<Text color={textColor} fontSize='sm' fontWeight='700'>
 					{info.getValue()}
 				</Text>

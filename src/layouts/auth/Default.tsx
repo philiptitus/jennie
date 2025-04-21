@@ -1,9 +1,8 @@
-import { Box, Flex, Icon, Text } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 import Footer from 'components/footer/FooterAuth';
 import FixedPlugin from 'components/fixedPlugin/FixedPlugin';
 import { NavLink } from 'react-router-dom';
-import { FaChevronLeft } from 'react-icons/fa';
 
 function AuthIllustration({ children, illustrationBackground, image }: { children: JSX.Element | string; illustrationBackground?: string; image?: string }) {
   return (
@@ -18,7 +17,9 @@ function AuthIllustration({ children, illustrationBackground, image }: { childre
         mx='auto'>
         <NavLink to='/admin' style={{ width: 'fit-content', marginTop: '40px' }}>
           <Flex align='center'>
-            <Icon as={FaChevronLeft} me='12px' h='13px' w='8px' color='secondaryGray.600' />
+            <span style={{ display: 'flex', alignItems: 'center', marginRight: '12px' }}>
+              <svg width="8" height="13" fill="currentColor" viewBox="0 0 8 13"><path d="M7.41 6.59L2.83 11.17 1.41 9.75l3.59-3.59-3.59-3.59L2.83.83l4.58 4.58z"/></svg>
+            </span>
             <Text fontSize='sm' color='secondaryGray.600'>
               Back
             </Text>

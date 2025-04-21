@@ -43,6 +43,12 @@ function SignUp() {
   const toast = useToast();
   const dispatch = useDispatch();
 
+	const clientId = '6pul2opu2dt6i086o3deg4nis9'; // Replace with your Cognito App Client ID
+	const redirectUri = encodeURIComponent('https://jennie-steel.vercel.app/auth/callback'); // Always use encodeURIComponent
+	const cognitoDomain = 'https://philip.auth.eu-north-1.amazoncognito.com'; // Your Cognito domain
+  
+	const cognitoLoginUrl = `https://philip.auth.eu-north-1.amazoncognito.com/login?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+  
   const userRegister = useSelector((state) => state.userRegister);
   const { error, loading, userInfo, success } = userRegister;
 
@@ -86,7 +92,7 @@ function SignUp() {
         duration: 5000,
         isClosable: true,
       });
-      navigate("/auth/sign-in"); // Redirect to the sign-in page
+      navigate(cognitoLoginUrl); // Redirect to the sign-in page
     }
 
     if (error) {
@@ -261,7 +267,7 @@ function SignUp() {
             mt='0px'>
             <Text color={textColorDetails} fontWeight='400' fontSize='14px'>
               Already have an account?
-              <NavLink to='/auth/sign-in'>
+              <NavLink to={cognitoLoginUrl}>
                 <Text
                   color={textColorBrand}
                   as='span'

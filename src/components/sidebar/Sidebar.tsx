@@ -68,15 +68,9 @@ export function SidebarResponsive(props: { routes: RoutesType[] }) {
 	return (
 		<Flex display={{ sm: 'flex', xl: 'none' }} alignItems='center'>
 			<Flex ref={btnRef} w='max-content' h='max-content' onClick={onOpen}>
-				<Icon
-					as={IoMenuOutline}
-					color={menuColor}
-					my='auto'
-					w='20px'
-					h='20px'
-					me='10px'
-					_hover={{ cursor: 'pointer' }}
-				/>
+				<span style={{ display: 'flex', alignItems: 'center' }}>
+					<svg width="20" height="20" fill={menuColor} viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="2"/><rect x="4" y="11" width="16" height="2"/><rect x="4" y="16" width="16" height="2"/></svg>
+				</span>
 			</Flex>
 			<Drawer
 				isOpen={isOpen}

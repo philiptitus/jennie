@@ -24,6 +24,12 @@ export default function Overview() {
 
   const [avatar, setAvatar] = useState('');
 
+	const clientId = '6pul2opu2dt6i086o3deg4nis9'; // Replace with your Cognito App Client ID
+	const redirectUri = encodeURIComponent('https://jennie-steel.vercel.app/auth/callback'); // Always use encodeURIComponent
+	const cognitoDomain = 'https://philip.auth.eu-north-1.amazoncognito.com'; // Your Cognito domain
+  
+	const cognitoLoginUrl = `https://philip.auth.eu-north-1.amazoncognito.com/login?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+  
   // Function to randomly select an SVG
   const importAll = (r: __WebpackModuleApi.RequireContext) => {
     const svgModules = r.keys().map(r);
@@ -41,7 +47,7 @@ export default function Overview() {
 
   useEffect(() => {
     if (!userInfo) {
-      navigate('/auth/sign-in');
+      navigate(cognitoLoginUrl);
     } else {
       const svg = randomSVG();
       setAvatar(svg); // Set the correct SVG path as the avatar

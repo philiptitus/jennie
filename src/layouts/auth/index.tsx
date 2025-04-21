@@ -10,6 +10,12 @@ import { SidebarContext } from 'contexts/SidebarContext';
 
 // Custom Chakra theme
 export default function Auth() {
+  	const clientId = '6pul2opu2dt6i086o3deg4nis9'; // Replace with your Cognito App Client ID
+	const redirectUri = encodeURIComponent('https://jennie-steel.vercel.app/auth/callback'); // Always use encodeURIComponent
+	const cognitoDomain = 'https://philip.auth.eu-north-1.amazoncognito.com'; // Your Cognito domain
+  
+	const cognitoLoginUrl = `https://philip.auth.eu-north-1.amazoncognito.com/login?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+  
   // states and functions
   const [toggleSidebar, setToggleSidebar] = useState(false);
   const getRoute = () => {
@@ -54,11 +60,21 @@ export default function Auth() {
                 {getRoutes(routes)}
                 <Route
                   path="/"
-                  element={<Navigate to="/auth/sign-in/default" replace />}
+                  element={<Navigate to={cognitoLoginUrl} replace />}
                 />
                 <Route
                   path="*"
-                  element={<Navigate to="/auth/404" replace />}
+                  element={
+                    (() => {
+                      // Allow Cognito login links to pass through without 404
+                      const cognitoRegex = /^https:\/\/([a-zA-Z0-9-]+\.)?amazoncognito\.com\/login\?/;
+                      if (typeof window !== 'undefined' && cognitoRegex.test(window.location.href)) {
+                        window.location.href = window.location.href; // let browser handle it
+                        return null;
+                      }
+                      return <Navigate to="/auth/404" replace />;
+                    })()
+                  }
                 />
               </Routes>
             </Box>

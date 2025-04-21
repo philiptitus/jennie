@@ -9,11 +9,9 @@ import {
 	useDisclosure,
 	useColorModeValue,
 	Flex,
-	Icon,
 	Text
 } from '@chakra-ui/react';
-// Assets
-import { MdOutlinePerson, MdOutlineCardTravel, MdOutlineLightbulb, MdOutlineSettings } from 'react-icons/md';
+
 export default function Banner(props: { icon: JSX.Element | string; [x: string]: any }) {
 	const { icon, ...rest } = props;
 
@@ -59,7 +57,9 @@ export default function Banner(props: { icon: JSX.Element | string; [x: string]:
 					}}
 					mb='10px'>
 					<Flex align='center'>
-						<Icon as={MdOutlinePerson} h='16px' w='16px' me='8px' />
+						<span style={{ display: 'flex', alignItems: 'center', marginRight: '8px' }}>
+							<svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V7c0-3.31-2.69-6-6-6S6 3.69 6 7v4c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-6c0-1.1-.9-2-2-2zm-6-9c2.21 0 4 1.79 4 4v4H8V7c0-2.21 1.79-4 4-4zm6 17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v6z"/></svg>
+						</span>
 						<Text fontSize='sm' fontWeight='400'>
 							Panel 1
 						</Text>
@@ -79,7 +79,9 @@ export default function Banner(props: { icon: JSX.Element | string; [x: string]:
 					}}
 					mb='10px'>
 					<Flex align='center'>
-						<Icon as={MdOutlineCardTravel} h='16px' w='16px' me='8px' />
+						<span style={{ display: 'flex', alignItems: 'center', marginRight: '8px' }}>
+							<svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+						</span>
 						<Text fontSize='sm' fontWeight='400'>
 							Panel 2
 						</Text>
@@ -99,7 +101,9 @@ export default function Banner(props: { icon: JSX.Element | string; [x: string]:
 					}}
 					mb='10px'>
 					<Flex align='center'>
-						<Icon as={MdOutlineLightbulb} h='16px' w='16px' me='8px' />
+						<span style={{ display: 'flex', alignItems: 'center', marginRight: '8px' }}>
+							<svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+						</span>
 						<Text fontSize='sm' fontWeight='400'>
 							Panel 3
 						</Text>
@@ -118,7 +122,9 @@ export default function Banner(props: { icon: JSX.Element | string; [x: string]:
 						bg: 'transparent'
 					}}>
 					<Flex align='center'>
-						<Icon as={MdOutlineSettings} h='16px' w='16px' me='8px' />
+						<span style={{ display: 'flex', alignItems: 'center', marginRight: '8px' }}>
+							<svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 00-7.07 17.07A10 10 0 1012 2zm0 18a8 8 0 110-16 8 8 0 010 16zm-1-7h2v2h-2v-2zm0-8h2v6h-2V5z"/></svg>
+						</span>
 						<Text fontSize='sm' fontWeight='400'>
 							Panel 4
 						</Text>

@@ -1,5 +1,5 @@
 // Chakra imports
-import { Box, Flex, Icon, Text, useColorModeValue } from '@chakra-ui/react';
+import { Box, Flex, Text, useColorModeValue } from '@chakra-ui/react';
 import BarChart from 'components/charts/BarChart';
 
 // Custom components
@@ -7,7 +7,6 @@ import Card from 'components/card/Card';
 import { barChartDataDailyTraffic, barChartOptionsDailyTraffic } from 'variables/charts';
 
 // Assets
-import { RiArrowUpSFill } from 'react-icons/ri';
 
 export default function DailyTraffic(props: { [x: string]: any }) {
 	const { ...rest } = props;
@@ -33,7 +32,9 @@ export default function DailyTraffic(props: { [x: string]: any }) {
 					</Flex>
 				</Flex>
 				<Flex align='center'>
-					<Icon as={RiArrowUpSFill} color='green.500' />
+					<span style={{ display: 'flex', alignItems: 'center', marginRight: '4px' }}>
+						<svg width="24" height="24" fill="green" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+					</span>
 					<Text color='green.500' fontSize='sm' fontWeight='700'>
 						+2.45%
 					</Text>

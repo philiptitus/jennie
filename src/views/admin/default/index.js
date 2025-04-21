@@ -50,14 +50,19 @@ export default function UserReports() {
   const { loading: createLoading, error: createError, success: createSuccess } = jobCreate;
   const userDetails = useSelector((state) => state.userDetails);
   const { loading: userDetailsLoading, error: userDetailsError, user } = userDetails;
-
+	const clientId = '6pul2opu2dt6i086o3deg4nis9'; // Replace with your Cognito App Client ID
+	const redirectUri = encodeURIComponent('https://jennie-steel.vercel.app/auth/callback'); // Always use encodeURIComponent
+	const cognitoDomain = 'https://philip.auth.eu-north-1.amazoncognito.com'; // Your Cognito domain
+  
+	const cognitoLoginUrl = `https://philip.auth.eu-north-1.amazoncognito.com/login?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+  
   // Chakra Color Mode
   const brandColor = useColorModeValue('brand.500', 'white');
   const boxBg = useColorModeValue('secondaryGray.300', 'whiteAlpha.100');
 
   useEffect(() => {
     if (!userInfo) {
-      navigate('/auth/sign-in');
+      navigate(cognitoLoginUrl);
     } else {
       dispatch(getUserDetails());
     }

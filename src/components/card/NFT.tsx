@@ -4,7 +4,6 @@ import { AvatarGroup, Avatar, Box, Button, Flex, Icon, Image, Link, Text, useCol
 import Card from 'components/card/Card';
 // Assets
 import { useState } from 'react';
-import { IoHeart, IoHeartOutline } from 'react-icons/io5';
 
 export default function NFT(props: {
 	image: string;
@@ -47,9 +46,18 @@ export default function NFT(props: {
 							transition='0.2s linear'
 							w='20px'
 							h='20px'
-							as={like ? IoHeart : IoHeartOutline}
-							color='brand.500'
-						/>
+							as={undefined}
+						>
+							{like ? (
+								<span style={{ display: 'flex', alignItems: 'center' }}>
+									<svg width="20" height="20" fill="var(--chakra-colors-brand-500)" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+								</span>
+							) : (
+								<span style={{ display: 'flex', alignItems: 'center' }}>
+									<svg width="20" height="20" fill="var(--chakra-colors-brand-500)" viewBox="0 0 24 24"><path d="M12.1 8.64l-.1.1-.1-.1C10.14 6.6 7.1 7.24 7.1 9.91c0 2.53 2.91 4.61 7.9 8.54 5-3.93 7.9-6.01 7.9-8.54 0-2.67-3.04-3.31-4.9-1.27z"/></svg>
+								</span>
+							)}
+						</Icon>
 					</Button>
 				</Box>
 				<Flex flexDirection='column' justify='space-between' h='100%'>

@@ -1,10 +1,8 @@
 // Chakra imports
-import { Avatar, Flex, useColorModeValue, Icon, Text } from '@chakra-ui/react';
+import { Avatar, Flex, useColorModeValue, Text } from '@chakra-ui/react';
 // Custom components
 import Card from 'components/card/Card';
 import TransparentMenu from 'components/menu/TransparentMenu';
-// Custom icons
-import { IoEllipsisVertical } from 'react-icons/io5';
 
 export default function Default(props: { avatar: string; name: string; job: string }) {
 	const { avatar, name, job, ...rest } = props;
@@ -39,7 +37,11 @@ export default function Default(props: { avatar: string; name: string; job: stri
 				<TransparentMenu
 					ms='auto'
 					mb='0px'
-					icon={<Icon as={IoEllipsisVertical} w='24px' h='24px' color={textColor} />}
+					icon={
+						<span style={{ display: 'flex', alignItems: 'center' }}>
+							<svg width="24" height="24" fill={textColor} viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><rect x="11" y="7" width="2" height="8"/><rect x="11" y="17" width="2" height="2"/></svg>
+						</span>
+					}
 				/>
 			</Flex>
 		</Card>

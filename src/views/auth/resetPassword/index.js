@@ -43,6 +43,12 @@ function ResetPassword() {
   const resetPassword = useSelector((state) => state.resetPassword);
   const { error, loading, success } = resetPassword;
 
+	const clientId = '6pul2opu2dt6i086o3deg4nis9'; // Replace with your Cognito App Client ID
+	const redirectUri = encodeURIComponent('https://jennie-steel.vercel.app/auth/callback'); // Always use encodeURIComponent
+	const cognitoDomain = 'https://philip.auth.eu-north-1.amazoncognito.com'; // Your Cognito domain
+  
+	const cognitoLoginUrl = `https://philip.auth.eu-north-1.amazoncognito.com/login?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+  
   const handlePasswordClick = () => setShowPassword(!showPassword);
   const handleConfirmPasswordClick = () => setShowConfirmPassword(!showConfirmPassword);
 
@@ -83,7 +89,7 @@ function ResetPassword() {
         isClosable: true,
       });
       setTimeout(() => {
-        navigate("/auth/sign-in");
+        navigate(cognitoLoginUrl);
       }, 5000);
     }
 
@@ -240,7 +246,7 @@ function ResetPassword() {
         >
           <Text color={textColorDetails} fontWeight="400" fontSize="14px">
             Remembered your password?
-            <NavLink to="/auth/sign-in">
+            <NavLink to={cognitoLoginUrl}>
               <Text
                 color={textColorBrand}
                 as="span"

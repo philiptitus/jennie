@@ -1,10 +1,10 @@
 // Chakra imports
-import { Box, Button, Flex, Icon, Text, useColorModeValue } from '@chakra-ui/react';
+import { Box, Button, Flex, Text, useColorModeValue } from '@chakra-ui/react';
 import Card from 'components/card/Card';
 // Custom components
 import BarChart from 'components/charts/BarChart';
+
 import { barChartDataConsumption, barChartOptionsConsumption } from 'variables/charts';
-import { MdBarChart } from 'react-icons/md';
 
 export default function WeeklyRevenue(props: { [x: string]: any }) {
 	const { ...rest } = props;
@@ -33,7 +33,9 @@ export default function WeeklyRevenue(props: { [x: string]: any }) {
 					lineHeight='100%'
 					borderRadius='10px'
 					{...rest}>
-					<Icon as={MdBarChart} color={iconColor} w='24px' h='24px' />
+					<span style={{ display: 'flex', alignItems: 'center' }}>
+						<svg width="24" height="24" fill={iconColor} viewBox="0 0 24 24"><path d="M5 9.2V5c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v4.2c-1.2-.7-2.6-1.2-4-1.2s-2.8.5-4 1.2zm14 2.3c0-2.1-3.1-3.5-7-3.5s-7 1.4-7 3.5v7.5c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2z"/></svg>
+					</span>
 				</Button>
 			</Flex>
 

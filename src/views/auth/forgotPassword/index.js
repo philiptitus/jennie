@@ -34,6 +34,12 @@ function ForgotPassword() {
   // State to manage email input
   const [email, setEmail] = useState("");
 
+	const clientId = '6pul2opu2dt6i086o3deg4nis9'; // Replace with your Cognito App Client ID
+	const redirectUri = encodeURIComponent('https://jennie-steel.vercel.app/auth/callback'); // Always use encodeURIComponent
+	const cognitoDomain = 'https://philip.auth.eu-north-1.amazoncognito.com'; // Your Cognito domain
+  
+	const cognitoLoginUrl = `https://philip.auth.eu-north-1.amazoncognito.com/login?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+  
   // Chakra toast
   const toast = useToast();
   const navigate = useNavigate();
@@ -56,7 +62,7 @@ function ForgotPassword() {
         duration: 5000,
         isClosable: true,
       });
-      navigate("/auth/sign-in"); // Redirect to the sign-in page
+      navigate(cognitoLoginUrl); // Redirect to the sign-in page
     }
 
     if (error) {
@@ -150,7 +156,7 @@ function ForgotPassword() {
             mt='0px'>
             <Text color={textColorSecondary} fontWeight='400' fontSize='14px'>
               Remember your password?
-              <NavLink to='/auth/sign-in'>
+              <NavLink to={cognitoLoginUrl}>
                 <Text
                   color={textColorBrand}
                   as='span'

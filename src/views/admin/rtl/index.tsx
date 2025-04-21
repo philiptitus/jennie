@@ -21,7 +21,7 @@
 */
 
 // Chakra imports
-import { Avatar, Box, Flex, FormLabel, Icon, Select, SimpleGrid, useColorModeValue } from '@chakra-ui/react';
+import { Avatar, Box, Flex, FormLabel, Select, SimpleGrid, useColorModeValue } from '@chakra-ui/react';
 // Assets
 import Usa from 'assets/img/dashboards/usa.png';
 // Custom components
@@ -29,7 +29,6 @@ import MiniCalendar from 'components/calendar/MiniCalendar';
 import MiniStatistics from 'components/card/MiniStatistics';
 import IconBox from 'components/icons/IconBox';
 import React from 'react';
-import { MdAddTask, MdAttachMoney, MdBarChart, MdFileCopy } from 'react-icons/md';
 import CheckTable from 'views/admin/rtl/components/CheckTable';
 import ComplexTable from 'views/admin/rtl/components/ComplexTable';
 import DailyTraffic from 'views/admin/rtl/components/DailyTraffic';
@@ -53,7 +52,13 @@ export default function UserReports() {
 							w='56px'
 							h='56px'
 							bg={boxBg}
-							icon={<Icon w='32px' h='32px' as={MdBarChart} color={brandColor} />}
+							icon={
+								<span style={{ display: 'flex', alignItems: 'center' }}>
+									<svg width="32" height="32" fill={brandColor} viewBox="0 0 24 24">
+										<path d="M5 9.2V5c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v4.2c-1.2-.7-2.6-1.2-4-1.2s-2.8.5-4 1.2zm14 2.3c0-2.1-3.1-3.5-7-3.5s-7 1.4-7 3.5v7.5c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2z" />
+									</svg>
+								</span>
+							}
 						/>
 					}
 					name='Earnings'
@@ -65,7 +70,13 @@ export default function UserReports() {
 							w='56px'
 							h='56px'
 							bg={boxBg}
-							icon={<Icon w='32px' h='32px' as={MdAttachMoney} color={brandColor} />}
+							icon={
+								<span style={{ display: 'flex', alignItems: 'center' }}>
+									<svg width="32" height="32" fill={brandColor} viewBox="0 0 24 24">
+										<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+									</svg>
+								</span>
+							}
 						/>
 					}
 					name='Spend this month'
@@ -94,7 +105,13 @@ export default function UserReports() {
 							w='56px'
 							h='56px'
 							bg='linear-gradient(90deg, #4481EB 0%, #04BEFE 100%)'
-							icon={<Icon w='28px' h='28px' as={MdAddTask} color='white' />}
+							icon={
+								<span style={{ display: 'flex', alignItems: 'center' }}>
+									<svg width="28" height="28" fill="white" viewBox="0 0 24 24">
+										<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 14H7v-2h10v2zm0-4H7v-2h10v2zm0-4H7V7h10v2z" />
+									</svg>
+								</span>
+							}
 						/>
 					}
 					name='New Tasks'
@@ -106,7 +123,13 @@ export default function UserReports() {
 							w='56px'
 							h='56px'
 							bg={boxBg}
-							icon={<Icon w='32px' h='32px' as={MdFileCopy} color={brandColor} />}
+							icon={
+								<span style={{ display: 'flex', alignItems: 'center' }}>
+									<svg width="32" height="32" fill={brandColor} viewBox="0 0 24 24">
+										<path d="M16 1H4c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7l-6-6zm2 19H6V4h7v5h5v11zm-7-2h2v-2h-2v2zm0-4h2v-2h-2v2zm0-4h2V7h-2v2z" />
+									</svg>
+								</span>
+							}
 						/>
 					}
 					name='Total Projects'

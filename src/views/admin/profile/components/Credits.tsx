@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Flex,
-  Icon,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -16,7 +15,6 @@ import {
   useColorModeValue,
   useDisclosure,
 } from '@chakra-ui/react';
-import { MdOutlineAttachMoney, MdOutlineHelpOutline } from 'react-icons/md';
 
 const Credits = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -28,7 +26,9 @@ const Credits = () => {
   return (
     <>
       <Button onClick={onOpen} variant="ghost" p={0}>
-        <Icon as={MdOutlineHelpOutline} color={brandColor} h='24px' w='24px' />
+        <span style={{ display: 'flex', alignItems: 'center' }}>
+          <svg width="24" height="24" fill={brandColor} viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><rect x="11" y="7" width="2" height="8"/><rect x="11" y="17" width="2" height="2"/></svg>
+        </span>
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
@@ -36,7 +36,9 @@ const Credits = () => {
         <ModalContent bg={box} color={textColorPrimary}>
           <ModalHeader>
             <Flex align="center">
-              <Icon as={MdOutlineAttachMoney} color={brandColor} h='24px' w='24px' mr={2} />
+              <span style={{ display: 'flex', alignItems: 'center', marginRight: '8px' }}>
+                <svg width="24" height="24" fill={brandColor} viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V7c0-3.31-2.69-6-6-6S6 3.69 6 7v4c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-6c0-1.1-.9-2-2-2zm-6-9c2.21 0 4 1.79 4 4v4H8V7c0-2.21 1.79-4 4-4zm6 17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v6z"/></svg>
+              </span>
               <Text fontWeight="bold" fontSize="xl">
                 Credits Explanation
               </Text>
@@ -46,7 +48,9 @@ const Credits = () => {
           <ModalBody>
             <Box mb={4}>
               <Flex align="center">
-                <Icon as={MdOutlineAttachMoney} color={brandColor} h='24px' w='24px' mr={2} />
+                <span style={{ display: 'flex', alignItems: 'center', marginRight: '8px' }}>
+                  <svg width="24" height="24" fill={brandColor} viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V7c0-3.31-2.69-6-6-6S6 3.69 6 7v4c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-6c0-1.1-.9-2-2-2zm-6-9c2.21 0 4 1.79 4 4v4H8V7c0-2.21 1.79-4 4-4zm6 17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v6z"/></svg>
+                </span>
                 <Text fontWeight="bold">Job Creation</Text>
               </Flex>
               <Text color={textColorSecondary}>- 10 credits</Text>
@@ -54,7 +58,9 @@ const Credits = () => {
             </Box>
             <Box mb={4}>
               <Flex align="center">
-                <Icon as={MdOutlineAttachMoney} color={brandColor} h='24px' w='24px' mr={2} />
+                <span style={{ display: 'flex', alignItems: 'center', marginRight: '8px' }}>
+                  <svg width="24" height="24" fill={brandColor} viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V7c0-3.31-2.69-6-6-6S6 3.69 6 7v4c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-6c0-1.1-.9-2-2-2zm-6-9c2.21 0 4 1.79 4 4v4H8V7c0-2.21 1.79-4 4-4zm6 17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v6z"/></svg>
+                </span>
                 <Text fontWeight="bold">Prep Material or Interview Creation</Text>
               </Flex>
               <Text color={textColorSecondary}>- 50 credits</Text>
@@ -62,7 +68,9 @@ const Credits = () => {
             </Box>
             <Box mb={4}>
               <Flex align="center">
-                <Icon as={MdOutlineAttachMoney} color={brandColor} h='24px' w='24px' mr={2} />
+                <span style={{ display: 'flex', alignItems: 'center', marginRight: '8px' }}>
+                  <svg width="24" height="24" fill={brandColor} viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V7c0-3.31-2.69-6-6-6S6 3.69 6 7v4c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-6c0-1.1-.9-2-2-2zm-6-9c2.21 0 4 1.79 4 4v4H8V7c0-2.21 1.79-4 4-4zm6 17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v6z"/></svg>
+                </span>
                 <Text fontWeight="bold">Marking Prep Material or Interviews</Text>
               </Flex>
               <Text color={textColorSecondary}>- 50 credits</Text>
@@ -70,7 +78,9 @@ const Credits = () => {
             </Box>
             <Box mb={4}>
               <Flex align="center">
-                <Icon as={MdOutlineAttachMoney} color={brandColor} h='24px' w='24px' mr={2} />
+                <span style={{ display: 'flex', alignItems: 'center', marginRight: '8px' }}>
+                  <svg width="24" height="24" fill={brandColor} viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V7c0-3.31-2.69-6-6-6S6 3.69 6 7v4c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-6c0-1.1-.9-2-2-2zm-6-9c2.21 0 4 1.79 4 4v4H8V7c0-2.21 1.79-4 4-4zm6 17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v6z"/></svg>
+                </span>
                 <Text fontWeight="bold">Running Code</Text>
               </Flex>
               <Text color={textColorSecondary}>- 10 credits</Text>
@@ -78,7 +88,9 @@ const Credits = () => {
             </Box>
             <Box mb={4}>
               <Flex align="center">
-                <Icon as={MdOutlineAttachMoney} color={brandColor} h='24px' w='24px' mr={2} />
+                <span style={{ display: 'flex', alignItems: 'center', marginRight: '8px' }}>
+                  <svg width="24" height="24" fill={brandColor} viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V7c0-3.31-2.69-6-6-6S6 3.69 6 7v4c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-6c0-1.1-.9-2-2-2zm-6-9c2.21 0 4 1.79 4 4v4H8V7c0-2.21 1.79-4 4-4zm6 17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v6z"/></svg>
+                </span>
                 <Text fontWeight="bold">Talking to an Agent During the Interview</Text>
               </Flex>
               <Text color={textColorSecondary}>- 20 credits</Text>

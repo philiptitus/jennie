@@ -6,7 +6,7 @@ import IconBox from 'components/icons/IconBox';
 import Menu from 'components/menu/MainMenu';
 import React from 'react';
 // Assets
-import { MdOutlineCloudDone , MdOutlineAttachMoney} from 'react-icons/md';
+import { MdOutlineCloudDone } from 'react-icons/md';
 import Credits from './Credits';
 
 export default function Banner(props: { used: number; total: number; [x: string]: any }) {
@@ -28,7 +28,11 @@ export default function Banner(props: { used: number; total: number; [x: string]
 				mx='auto'
 				h='100px'
 				w='100px'
-				icon={<Icon as={MdOutlineAttachMoney} color={brandColor} h='46px' w='46px' />}
+				icon={
+          <span style={{ display: 'flex', alignItems: 'center' }}>
+            <svg width="46" height="46" fill={brandColor} viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V7c0-3.31-2.69-6-6-6S6 3.69 6 7v4c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-6c0-1.1-.9-2-2-2zm-6-9c2.21 0 4 1.79 4 4v4H8V7c0-2.21 1.79-4 4-4zm6 17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v6z"/></svg>
+          </span>
+        }
 				bg={box}
 			/>
 			<Text color={textColorPrimary} fontWeight='bold' fontSize='2xl' mt='10px'>
